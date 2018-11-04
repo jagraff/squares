@@ -312,12 +312,6 @@ class Game {
       point.y < this.size
     )
   }
-  
-  updatePlayer (player) {
-    if (player.pendingMove) {
-      player.pendingMove = null
-    }
-  }
 
   countColors () {
     var colorCount = {}
@@ -360,7 +354,6 @@ class Game {
     this.updates.push({x: winner.pendingMove.x, y: winner.pendingMove.y, color: winner.color.name, strength: strength})
     winner.socket.emit("pending", {})
     console.log(`player ${winner.color.name} captured tile ${winner.pendingMove.x} ${winner.pendingMove.y}`)
-    winner.pendingMove = null
   }
 
   flushUpdates () {
@@ -405,7 +398,6 @@ class Game {
       if (winner.pendingMove && winner.color) {
         const original = this.tiles[winner.pendingMove.x][winner.pendingMove.y]
         const power = this.calculateScore(winner.pendingMove.x, winner.pendingMove.y, winner.color)
-
         if (original.color != winner.color) {
           // If you capture an enemy tile, your power (number of adjescent tiles)
           // must be greater than the strength (so an upgraded tile must be surrounded on 3 sides to be captured)
@@ -415,15 +407,19 @@ class Game {
             /* not strong enough to capture this tile */
           }
         } else {
-          // If the original color was your color, you get an upgrade to strength 2 on your 2nd click
-          if (power > 3) {
+          if (original.strength == 1 && power > 3) {
+            // If the original color was your color, you get an upgrade to strength 2 on your 2nd click
             this.captureTile(winner, 2)
-          } else {
-            this.captureTile(winner, 1)
           }
         }
         
       }
+    })
+
+    // clear out pending moves
+    players.forEach(function (player) {
+      player.pendingMove = null
+      player.socket.emit("pending", {})
     })
 
     this.updateCounter += 1
