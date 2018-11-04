@@ -1,0 +1,19 @@
+{
+  "name": "Squares",
+  "version": "0.0.0",
+  "description": "A simple game where players click squares",
+  "main": "index.js",
+  "author": "David Hargat",
+  "private": false,
+  "license": "MIT",
+  "dependencies": {
+    "express": "4.13.4",
+    "socket.io": "2.1.1"
+  },
+  "devDependencies": {
+    "livereload": "0.7.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
