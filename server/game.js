@@ -20,7 +20,8 @@ class Game {
      * 
      *
      */
-    constructor(size) {
+    constructor(io, size) {
+        this.io = io
         this.size = size
         // create an empty map
         this.map = new Matrix(size, (x, y) => new Tile(x, y, "white", 1))
@@ -57,19 +58,19 @@ class Game {
         })
         // tell the client they can start now -- TODO: remove this?
         // player.socket.emit("start")
-        console.log(`${player.toString()} joined the game.`)
+        console.log(`[*] ${player.toString()} joined the game.`)
     }
     removePlayer(player) {
         delete this.socketToPlayer[player.socket.id]
         this.players = this.players.filter((p) => p !== player)
-        console.log(`${player.toString()} left the game.`)
+        console.log(`[*] ${player.toString()} left the game.`)
     }
     // How many tiles in total are still white?
     countWhiteTiles() {
         return this.map.allTiles().filter((tile) => tile.color == "white")
     }
     adjescentTilesForColor(x, y, color) {
-        return this.map.adjacentTiles(x, y).filter(tile => tile.color === color).length
+        return this.map.adjacentTiles(x, y).filter(tile => tile.color === color)
     }
     // Serialize the whole map so we can send it through socket.io.
     tilesToJson() {
@@ -77,10 +78,10 @@ class Game {
     }
     setTile(x, y, color, strength) {
         const tile = new Tile(x, y, color, strength)
-        this.tiles[x][y] = tile
+        this.map.tiles[x][y] = tile
         // tell every client about the updated tile
-        io.emit("tiles", [tile.toJson()])
-        console.log(`setTile(${x}, ${y}, ${color}, ${strength})`)
+        this.io.emit("tiles", [tile.toJson()])
+        console.log(`[*] tile(${x}, ${y}, ${color}, ${strength})`)
     }
     // Process 1 turn.
     update() {
@@ -97,7 +98,6 @@ class Game {
             players,
             p => p.pendingMove.toString() // toString ensures 2 points will hash to the same bucket
         )
-        console.log(`player=${this.players.length} battles=${battles.length}`)
         // decide which player wins each tile
         battles.forEach((possibleWinners) => {
             // randomly choose one of the players from the list
@@ -107,7 +107,7 @@ class Game {
             const y = winner.pendingMove.y
             const color = winner.color
             // tile which is being captured
-            const tile = this.tiles[x][y]
+            const tile = this.map.tiles[x][y]
             // how many tiles does this player have adjescent to the tile being capture?
             const power = this.adjescentTilesForColor(x, y, color).length
             // If the original tile is white, capture is successful.
@@ -166,9 +166,10 @@ class Game {
         // Is there only 1 player left on the map? That means they win.
         if (tilesByColor.length == 1) {
             // Figure out which color won by peeking at one of their tiles.
-            const winner = tilesByColor[0].color
+            const winner = tilesByColor[0][0].color
             // Tell the clients who won.
-            io.emit('winner', winner)
+            this.io.emit('winner', winner)
+            console.log(`[*] ${winner} won the game`)
             // Stop updating the game.
             this.running = false
         }

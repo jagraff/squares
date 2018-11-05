@@ -9,8 +9,8 @@ var io = require('socket.io')(server)
 var port = process.env.PORT || 3000
 
 const Game = require('./server/game.js')
-var size = 5
-var game = new Game(size)
+var size = 10
+var game = new Game(io, size)
 
 server.listen(port, () => {
   console.log('Server listening at port %d', port)
@@ -20,7 +20,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 setInterval(function() {
   game.updateIfRunning()
-}, 250)
+}, 500)
 
 io.on('connection', (socket) => {
   socket.on('join', () => {
