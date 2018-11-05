@@ -9,7 +9,7 @@ var io = require('socket.io')(server)
 var port = process.env.PORT || 3000
 
 const Game = require('./server/game.js')
-var size = 10
+var size = 5
 var game = new Game(io, size)
 
 server.listen(port, () => {

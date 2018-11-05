@@ -174,8 +174,12 @@ $(function () {
   socket.on("assign", updateColor);
   socket.on("winner", function (message) {
     var e = document.getElementById("winner");
-    e.textContent = message.toUpperCase() + " WINS!";
-    e.style.color = message;
+    if (message) {
+      e.textContent = message.toUpperCase() + " WINS!";
+      e.style.color = message;
+    } else {
+      e.textContent = ""
+    }
   });
   socket.on("pending", function (message) {
     state.select = message

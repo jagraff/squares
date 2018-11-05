@@ -43,6 +43,18 @@ class Game {
         // store each time a tile is modified
         this.updates = []
     }
+    reset() {
+        // create an empty map
+        this.map = new Matrix(this.size, (x, y) => new Tile(x, y, "white", 1))
+        // create each players starting point
+        this.map.tiles[0][0] = new Tile(0, 0, "red")
+        this.map.tiles[this.size - 1][this.size - 1] = new Tile(this.size - 1, this.size - 1, "green")
+        this.map.tiles[0][this.size - 1] = new Tile(0, this.size - 1, "blue")
+        // send all tiles
+        this.io.emit("tiles", this.tilesToJson())
+        this.io.emit("winner", false)
+        this.running = true
+    }
     addPlayer(player) {
         this.socketToPlayer[player.socket.id] = player
         this.players.push(player)
@@ -172,6 +184,7 @@ class Game {
             console.log(`[*] ${winner} won the game`)
             // Stop updating the game.
             this.running = false
+            setTimeout(() => this.reset(), 1000)
         }
     }
     findAvailableColors() {
