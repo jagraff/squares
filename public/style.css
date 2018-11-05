@@ -25,19 +25,20 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+  background: #8b8b8b;
 }
 
 .container {
-  width: 100%;
-  height: 100%;
+  /* width: 100%;
+  height: 100%; */
   margin: 0;
   padding: 0;
   border: 0;
 }
 
 #inner-container {
-  width: 800px;
-  height: 1000px;
+  /* width: 800px;
+  height: 1000px; */
   display: block;
   margin: auto;
 }
@@ -50,7 +51,7 @@ html, body {
 canvas {
   display: block;
   margin: auto;
-  width: 800px;
-  height: 800px;
+  /* width: 800px;
+  height: 800px; */
   border: solid 1px black;
 }

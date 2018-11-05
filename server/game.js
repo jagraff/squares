@@ -25,15 +25,17 @@ class Game {
         this.size = size
         // create an empty map
         this.map = new Matrix(size, (x, y) => new Tile(x, y, "white", 1))
+        // #051e3e • #251e3e • #451e3e • #651e3e • #851e3e
+        // #4a4e4d • #0e9aa7 • #3da4ab • #f6cd61 • #fe8a71
         this.colors = [
-            "red",
-            "green",
-            "blue"
+            "#3da4ab",
+            "#f6cd61",
+            "#fe8a71"
         ]
         // create each players starting point
-        this.map.tiles[0][0] = new Tile(0, 0, "red")
-        this.map.tiles[size - 1][size - 1] = new Tile(size - 1, size - 1, "green")
-        this.map.tiles[0][size - 1] = new Tile(0, size - 1, "blue")
+        this.map.tiles[0][0] = new Tile(0, 0, this.colors[0])
+        this.map.tiles[size - 1][size - 1] = new Tile(size - 1, size - 1, this.colors[1])
+        this.map.tiles[0][size - 1] = new Tile(0, size - 1, this.colors[2])
         // -- should this be seperated?
         // associate a socket.id to a player object
         this.socketToPlayer = {}
@@ -47,9 +49,9 @@ class Game {
         // create an empty map
         this.map = new Matrix(this.size, (x, y) => new Tile(x, y, "white", 1))
         // create each players starting point
-        this.map.tiles[0][0] = new Tile(0, 0, "red")
-        this.map.tiles[this.size - 1][this.size - 1] = new Tile(this.size - 1, this.size - 1, "green")
-        this.map.tiles[0][this.size - 1] = new Tile(0, this.size - 1, "blue")
+        this.map.tiles[0][0] = new Tile(0, 0, this.colors[0])
+        this.map.tiles[this.size - 1][this.size - 1] = new Tile(this.size - 1, this.size - 1, this.colors[1])
+        this.map.tiles[0][this.size - 1] = new Tile(0, this.size - 1, this.colors[2])
         // send all tiles
         this.io.emit("tiles", this.tilesToJson())
         this.io.emit("winner", false)
@@ -58,18 +60,12 @@ class Game {
     addPlayer(player) {
         this.socketToPlayer[player.socket.id] = player
         this.players.push(player)
-        // tell the player which color they have
-        // player.socket.emit("assign", player.color)
-        // send every tile to the player
-        // player.socket.emit("tiles", this.tilesToJson())
         // send game configuration to player
         player.socket.emit("config", {
             size: this.size,
             color: player.color,
             tiles: this.tilesToJson()
         })
-        // tell the client they can start now -- TODO: remove this?
-        // player.socket.emit("start")
         console.log(`[*] ${player.toString()} joined the game.`)
     }
     removePlayer(player) {
@@ -193,8 +189,9 @@ class Game {
     }
     handleSocketConnect(socket) {
         const availableColors = this.findAvailableColors()
+        const randomSelection = Math.floor(Math.random() * availableColors.length)
         if (availableColors.length > 0) {
-            const color = availableColors.pop()
+            const color = availableColors[randomSelection]
             const player = new Player(socket, color)
             this.addPlayer(player)
         } else {

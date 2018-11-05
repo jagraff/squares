@@ -9,11 +9,17 @@
 </head>
 <body>
   
-  <div class="container">
+  <div
+    style="-moz-user-select: none; -webkit-user-select: none; -ms-user-select:none; user-select:none;-o-user-select:none;" 
+    unselectable="on"
+    onselectstart="return false;" 
+    onmousedown="return false;"
+    class="container">
       <div id="inner-container">
           <canvas id="canvas"></canvas>
           <p id="winner"></p>
-          <p>You Are:
+          <p
+          >You Are:
             <span id="color">Unknown</span>
           </p>
       </div>
@@ -21,6 +27,12 @@
 
   <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
+
+  <!-- GAME -->
+  <script src="/game.js"></script>
+  <script src="/matrix.js"></script>
+  <script src="/tile.js"></script>
+  <script src="/renderer.js"></script>
   <script src="/main.js"></script>
 
   <!-- LIVERELOAD -->
