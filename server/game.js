@@ -16,10 +16,6 @@ function groupBy(list, keyGetter) {
     return Object.keys(map).map(key => map[key])
 }
 class Game {
-    /*
-     * 
-     *
-     */
     constructor(io, size) {
         this.io = io
         this.size = size
@@ -213,9 +209,17 @@ class Game {
             const point = Point.maybeCreatePointFromMessage(message)
             if (point) {
                 if (point.withinBounds(this.size)) {
-                    player.pendingMove = point
-                    player.socket.emit("pending", message)
-                    console.log(`[*] ${player.toString()} set pending move ${point.toString()}`)
+                    const tile = this.map.tiles[point.x][point.y]
+                    const power = this.adjescentTilesForColor(point.x, point.y, player.color).length
+                    const canUpgrade = (tile.color == player.color && tile.strength == 1 && power > 3)
+                    const canAttack = (tile.color != player.color && power > 0)
+                    if (canAttack || canUpgrade) {
+                        player.pendingMove = point
+                        player.socket.emit("pending", message)
+                        console.log(`[*] ${player.toString()} set pending move ${point.toString()}`)
+                    } else {
+                        console.log(`[!] ${player.toString()} clicked invalid move ${point.toString()}`)
+                    }
                 } else {
                     console.log(`[!] ${player.toString()} sent out-of-bounds click ${point.toString()}`)
                 }

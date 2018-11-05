@@ -20,3 +20,34 @@ Matrix.prototype.setTiles = function (tiles) {
         }
     }
 }
+Matrix.prototype.checkBorders = function (x, y) {
+    return {
+        up: y > 0,
+        down: y < this.size - 1,
+        left: x > 0,
+        right: x < this.size - 1
+    }
+}
+Matrix.prototype.adjacentTiles = function (x, y) {
+    var tiles = []
+    // Figure out which sides border the edge of the map, so we can
+    // determine which sides have an adjecent tile.
+    var border = this.checkBorders(x, y)
+    var up = border.up
+    var left = border.left
+    var right = border.right
+    var down = border.down
+    if (left) {
+        tiles.push(this.tiles[x - 1][y])
+    }
+    if (right) {
+        tiles.push(this.tiles[x + 1][y])
+    }
+    if (up) {
+        tiles.push(this.tiles[x][y - 1])
+    }
+    if (down) {
+        tiles.push(this.tiles[x][y + 1])
+    }
+    return tiles
+}

@@ -12,7 +12,6 @@ function Game(canvas, socket, canvasSize) {
     this.ready = false
 }
 Game.prototype.updateColor = function (color) {
-    console.log("updateColor")
     this.color = color
     var element = document.getElementById("color")
     element.textContent = this.color

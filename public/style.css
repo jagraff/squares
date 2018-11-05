@@ -25,7 +25,7 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  background: #8b8b8b;
+  background: #efefef;
 }
 
 .container {
@@ -34,6 +34,7 @@ html, body {
   margin: 0;
   padding: 0;
   border: 0;
+  padding-top: 32px;
 }
 
 #inner-container {
@@ -54,4 +55,9 @@ canvas {
   /* width: 800px;
   height: 800px; */
   border: solid 1px black;
+  -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  -moz-box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  -ms-box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  -o-box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
