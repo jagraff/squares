@@ -1,7 +1,9 @@
 # Squares Game
+## done
+- if you click an invalid move AND you had a valid move selected, it should keep the valid move
+- NO CLICK neccesary, automatically capture whatever is under your mouse
 ## core gameplay idea
 - aim correction, decreasing "wasted clicks" (feels bad)
-    - if you click an invalid move AND you had a valid move selected, it should keep the valid move
     - if you click right next to a tile that is valid, it should auto-correct to the valid tile
 - turn-selection animation should happen immediatly on the UI side
 - visualize the duration of a turn, maybe with a bar at the bottom
@@ -27,10 +29,9 @@
 - diplomatic victory
 - turn transition takes N milliseconds, and no one can click during this time.
 - change refresh speed during game
-# UI
+# UI/UX
 - animated tiles, look like they're glowing?
 - actual color schemes
-- NO CLICK neccesary, automatically capture whatever is under your mouse
 - hovering over a tile highlights it
 - hold click to capture
 - display when you are allowed to click again

@@ -11,13 +11,13 @@ html {
 
 html, input, body {
   font-family:
-    "HelveticaNeue-Light",
-    "Helvetica Neue Light",
-    "Helvetica Neue",
-    Helvetica,
-    Arial,
-    "Lucida Grande",
-    sans-serif;
+  "HelveticaNeue-Light",
+  "Helvetica Neue Light",
+  "Helvetica Neue",
+  Helvetica,
+  Arial,
+  "Lucida Grande",
+  sans-serif;
   font-size: 24px;
 }
 
@@ -25,8 +25,8 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  background: #efefef;
   overflow: hidden;
+  background: white;
 }
 
 .container {
@@ -36,10 +36,6 @@ html, body {
   padding: 0;
   border: 0;
   /* padding-top: 32px; */
-}
-
-.top-space {
-  height: 40px;
 }
 
 #inner-container {
@@ -55,7 +51,8 @@ html, body {
 }
 
 .top-bar {
-  background: #333;
+  /* background: #333; */
+  background: #efefef;
   height: 40px;
   width: 100%;
   margin: 0;
@@ -64,16 +61,27 @@ html, body {
   padding-left: 40px;
 }
 
+.top-space {
+  height: 40px;
+}
+
 .top-bar-text {
-  color: white;
+  /* color: white; */
+  color: black;
   font-size: 14px;
   font-weight: 100;
   letter-spacing: 3px;
   text-transform: uppercase;
+  text-align: center;
   /* should be same as top-bar.height */
   line-height: 40px;
   /* display: inline-block;
   vertical-align: middle; */
+}
+
+#color {
+  font-weight: bold;
+  letter-spacing: 1px;
 }
 
 canvas {

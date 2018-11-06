@@ -98,13 +98,14 @@ Renderer.prototype.drawSelectSquare = function (game) {
     var matrix = game.matrix
     var squareSize = game.calculateSquareSize()
     var offset = squareSize / 3
-    this.fillRect(
-        (x * squareSize) + offset,
-        (y * squareSize) + offset,
-        squareSize - (offset * 2),
-        squareSize - (offset * 2),
-        game.color
-    )
+    // this.fillRect(
+    //     (x * squareSize) + offset,
+    //     (y * squareSize) + offset,
+    //     squareSize - (offset * 2),
+    //     squareSize - (offset * 2),
+    //     // game.color
+    //     "white"
+    // )
     this.fillRect(
         (x * squareSize) + offset,
         (y * squareSize) + offset,

@@ -2,8 +2,8 @@ function Game(canvas, socket, borderSize) {
     this.canvas = canvas
     this.borderSize = borderSize
     this.socket = socket
-    // calculated at run-time
-    this.canvasSize = null
+    // updated at run-time as neccesary
+    this.canvasSize = this.calculateCanvasSize()
     // obtained from server
     this.select = null
     this.color = null
@@ -77,8 +77,9 @@ Game.prototype.updateConfig = function (config) {
 }
 Game.prototype.init = function () {
     var self = this
-    // Handle mouse clicks.
-    this.canvas.addEventListener('click', function (event) {
+    var g_mouseLocation = {}
+    // calculate the location of the mouse with respect to the grid
+    var calculateLocationFromEvent = function (event) {
         var x = (
             event.clientX +
             document.body.scrollLeft +
@@ -92,16 +93,28 @@ Game.prototype.init = function () {
             canvas.offsetTop
         )
         var squareSize = self.calculateSquareSize()
-        var calculateLocation = function (x, y) {
-            var cx = Math.ceil(x / squareSize) - 1
-            var cy = Math.ceil(y / squareSize) - 1
-            return {
-                x: cx,
-                y: cy
-            }
+        var cx = Math.ceil(x / squareSize) - 1
+        var cy = Math.ceil(y / squareSize) - 1
+        return {
+            x: cx,
+            y: cy
         }
-        self.socket.emit('click', calculateLocation(x, y))
-    })
+    }
+    var handleMouseEvent = function(event) {
+        g_mouseLocation = calculateLocationFromEvent(event)
+        // tell the server the current mouse position if the user clicks
+        self.socket.emit('click', g_mouseLocation)
+    }
+    // Keep track of where the mouse is, but don't neccesary send every update to the server
+    this.canvas.addEventListener('mousemove', function () {
+        g_mouseLocation = calculateLocationFromEvent(event)
+    });
+    // Tell the server if the canvas is clicked.
+    this.canvas.addEventListener('click', handleMouseEvent)
+    // Tell the server the current mouse position - every 10th of a second
+    setInterval(function () {
+        self.socket.emit('click', g_mouseLocation)
+    }, 100)
     // Handle window resizing.
     $(window).resize(function() { self.updateSize(); });
     // Handle socket events.
