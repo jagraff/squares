@@ -26,6 +26,7 @@ html, body {
   margin: 0;
   padding: 0;
   background: #efefef;
+  overflow: hidden;
 }
 
 .container {
@@ -34,7 +35,11 @@ html, body {
   margin: 0;
   padding: 0;
   border: 0;
-  padding-top: 32px;
+  /* padding-top: 32px; */
+}
+
+.top-space {
+  height: 40px;
 }
 
 #inner-container {
@@ -47,6 +52,28 @@ html, body {
 #winner {
   font-weight: bold;
   font-size: 32px;
+}
+
+.top-bar {
+  background: #333;
+  height: 40px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  padding-left: 40px;
+}
+
+.top-bar-text {
+  color: white;
+  font-size: 14px;
+  font-weight: 100;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  /* should be same as top-bar.height */
+  line-height: 40px;
+  /* display: inline-block;
+  vertical-align: middle; */
 }
 
 canvas {

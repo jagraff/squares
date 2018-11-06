@@ -1,21 +1,5 @@
-function Renderer(canvas, canvasSize) {
-    this.canvasSize = canvasSize
-    this.canvas = canvas
-    this.ctx = canvas.getContext('2d')
-    // make sure the canvas has the correct dimensions
-    this.canvas.width = this.canvasSize;
-    this.canvas.height = this.canvasSize;
-    this.canvas.style.width = this.canvasSize + "px"
-    this.canvas.style.height = this.canvasSize + "px"
-}
-
-function hexToRgb(hex) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-    } : null;
+function Renderer(ctx) {
+    this.ctx = ctx;
 }
 // fills in a rectangle
 Renderer.prototype.fillRect = function (x, y, width, height, color) {
@@ -34,8 +18,9 @@ Renderer.prototype.strokeRect = function (x, y, width, height, color, lineWidth)
     this.ctx.stroke()
 }
 // draw the borders for the entire matrix
-Renderer.prototype.drawBorders = function (matrix) {
-    var squareSize = this.canvasSize / matrix.size
+Renderer.prototype.drawBorders = function (game) {
+    var matrix = game.matrix
+    var squareSize = game.calculateSquareSize()
     for (var x = 0; x < matrix.size; x++) {
         for (var y = 0; y < matrix.size; y++) {
             this.strokeRect(
@@ -58,7 +43,7 @@ Renderer.prototype.circle = function (x, y, radius, color) {
 // draw each individual tile color
 Renderer.prototype.drawTiles = function (game) {
     var matrix = game.matrix
-    var squareSize = this.canvasSize / matrix.size
+    var squareSize = game.calculateSquareSize()
     var adjescentTilesForColor = function (x, y, color) {
         var tiles = []
         var adjecentTiles = matrix.adjacentTiles(x, y)
@@ -93,15 +78,14 @@ Renderer.prototype.drawTiles = function (game) {
                 }
                 // highlight tiles which you can capture
                 var power = adjescentTilesForColor(x, y, game.color).length
+                var highlightColor = Color[game.color]._a(0.1).toString()
                 if (power > 0 && tile.color == "white") {
-                    var color = hexToRgb(game.color)
-                    var s = "rgba(" + color.r + "," + color.g + "," + color.b + "," + "0.2" + ")"
                     this.fillRect(
                         (x * squareSize) + offset,
                         (y * squareSize) + offset,
                         squareSize - (offset * 2),
                         squareSize - (offset * 2),
-                        s
+                        highlightColor
                     )
                 }
             }
@@ -112,39 +96,32 @@ Renderer.prototype.drawSelectSquare = function (game) {
     var x = game.select.x
     var y = game.select.y
     var matrix = game.matrix
-    var squareSize = this.canvasSize / matrix.size
+    var squareSize = game.calculateSquareSize()
     var offset = squareSize / 3
-    var color = hexToRgb(game.color)
-    var s = "rgba(" + color.r + "," + color.g + "," + color.b + "," + "1.0" + ")"
-    // this.fillRect(
-    //     (x * squareSize) + offset,
-    //     (y * squareSize) + offset,
-    //     squareSize - (offset * 2),
-    //     squareSize - (offset * 2),
-    //     s
-    // )
-    this.circle(
-        (x * squareSize) + (squareSize / 2),
-        (y * squareSize) + (squareSize / 2), 
-        8,
-        s
+    this.fillRect(
+        (x * squareSize) + offset,
+        (y * squareSize) + offset,
+        squareSize - (offset * 2),
+        squareSize - (offset * 2),
+        game.color
     )
-    this.circle(
-        (x * squareSize) + (squareSize / 2),
-        (y * squareSize) + (squareSize / 2), 
-        8,
+    this.fillRect(
+        (x * squareSize) + offset,
+        (y * squareSize) + offset,
+        squareSize - (offset * 2),
+        squareSize - (offset * 2),
         "rgba(0,0,0,0.2)"
     )
 }
 // fill the canvas with white
-Renderer.prototype.clear = function () {
-    this.fillRect(0, 0, this.canvasSize, this.canvasSize, "white")
+Renderer.prototype.clear = function (game) {
+    this.fillRect(0, 0, game.canvasSize, game.canvasSize, "white")
 }
 // draw everything
 Renderer.prototype.draw = function (game) {
-    this.clear()
+    this.clear(game)
     this.drawTiles(game)
-    this.drawBorders(game.matrix)
+    this.drawBorders(game)
     if (game.select) {
         this.drawSelectSquare(game)
     }

@@ -1,6 +1,8 @@
 $(function () {
   var canvas = document.getElementById('canvas')
   var socket = io()
-  var game = new Game(canvas, socket, 800)
+  var borderSize = 40
+  // var maxHeight 
+  var game = new Game(canvas, socket, borderSize)
   game.init()
 })

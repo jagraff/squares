@@ -21,12 +21,10 @@ class Game {
         this.size = size
         // create an empty map
         this.map = new Matrix(size, (x, y) => new Tile(x, y, "white", 1))
-        // #051e3e • #251e3e • #451e3e • #651e3e • #851e3e
-        // #4a4e4d • #0e9aa7 • #3da4ab • #f6cd61 • #fe8a71
         this.colors = [
-            "#3da4ab",
-            "#f6cd61",
-            "#fe8a71"
+            "red",
+            "green",
+            "blue"
         ]
         // create each players starting point
         this.map.tiles[0][0] = new Tile(0, 0, this.colors[0])
