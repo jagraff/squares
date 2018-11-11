@@ -24,12 +24,14 @@ class Game {
         this.colors = [
             "red",
             "green",
+            "purple",
             "blue"
         ]
         // create each players starting point
         this.map.tiles[0][0] = new Tile(0, 0, this.colors[0])
-        this.map.tiles[size - 1][size - 1] = new Tile(size - 1, size - 1, this.colors[1])
+        this.map.tiles[size - 1][0] = new Tile(size - 1, 0, this.colors[1])
         this.map.tiles[0][size - 1] = new Tile(0, size - 1, this.colors[2])
+        this.map.tiles[size - 1][size - 1] = new Tile(size - 1, size - 1, this.colors[3])
         // -- should this be seperated?
         // associate a socket.id to a player object
         this.socketToPlayer = {}
@@ -46,6 +48,7 @@ class Game {
         this.map.tiles[0][0] = new Tile(0, 0, this.colors[0])
         this.map.tiles[this.size - 1][this.size - 1] = new Tile(this.size - 1, this.size - 1, this.colors[1])
         this.map.tiles[0][this.size - 1] = new Tile(0, this.size - 1, this.colors[2])
+        this.map.tiles[this.size - 1][this.size - 1] = new Tile(this.size - 1, this.size - 1, this.colors[3])
         // send all tiles
         this.io.emit("tiles", this.tilesToJson())
         this.io.emit("winner", false)

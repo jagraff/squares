@@ -114,7 +114,7 @@ Game.prototype.init = function () {
     // Tell the server the current mouse position - every 10th of a second
     setInterval(function () {
         self.socket.emit('click', g_mouseLocation)
-    }, 100)
+    }, 250)
     // Handle window resizing.
     $(window).resize(function() { self.updateSize(); });
     // Handle socket events.

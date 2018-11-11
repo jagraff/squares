@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>conflict</title>
+  <link rel="stylesheet" href="style.css">
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+
+<body>
+  <div class="top-bar top-bar-text">
+    Team: <span id="color">Red</span>
+  </div>
+  <div class="top-space">
+  </div>
+  <div style="-moz-user-select: none; -webkit-user-select: none; -ms-user-select:none; user-select:none;-o-user-select:none;"
+    unselectable="on" onselectstart="return false;" onmousedown="return false;" class="container">
+    <div id="inner-container">
+      <canvas id="canvas"></canvas>
+      <p id="winner"></p>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/main.js"></script>
+</body>
+
+</html>

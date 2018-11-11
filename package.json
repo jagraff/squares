@@ -11,9 +11,14 @@
     "socket.io": "2.1.1"
   },
   "devDependencies": {
-    "livereload": "0.7.0"
+    "livereload": "0.7.0",
+    "uglify-js": "^3.4.9"
+  },
+  "engines": {
+    "node": "9.x"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "build": "uglifyjs --toplevel --mangle --compress -- public/*.js > dist/main.js"
   }
 }
