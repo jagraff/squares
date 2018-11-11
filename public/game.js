@@ -78,6 +78,11 @@ Game.prototype.updateConfig = function (config) {
 Game.prototype.init = function () {
     var self = this
     var g_mouseLocation = {}
+    var g_lastSendMouseLocation = {}
+    var pointEquals = function (p1, p2) {
+        return (p1.x == p2.x)
+            && (p1.y == p2.y)
+    }
     // calculate the location of the mouse with respect to the grid
     var calculateLocationFromEvent = function (event) {
         var x = (
@@ -113,7 +118,11 @@ Game.prototype.init = function () {
     this.canvas.addEventListener('click', handleMouseEvent)
     // Tell the server the current mouse position - every 10th of a second
     setInterval(function () {
-        self.socket.emit('click', g_mouseLocation)
+        // only send the new mouse location IF the mouse has moved.
+        if (!pointEquals(g_mouseLocation, g_lastSendMouseLocation)) {
+            self.socket.emit('click', g_mouseLocation)
+        }
+        g_lastSendMouseLocation = g_mouseLocation
     }, 250)
     // Handle window resizing.
     $(window).resize(function() { self.updateSize(); });
