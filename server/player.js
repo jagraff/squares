@@ -1,7 +1,7 @@
 class Player {
-    constructor(socket, color) {
+    constructor(socket, teamId) {
         this.socket = socket
-        this.color = color
+        this.teamId = teamId
         this.pendingMove = null
     }
     toString() {

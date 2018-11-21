@@ -9,17 +9,17 @@ class Tile {
      * The advantage of having strength==2, means the enemy must have 2 adjescent tiles to capture your tile.
      * The disadvantge is it costs you 1 turn.
      */
-    constructor(x, y, color, strength) {
+    constructor(x, y, teamId, strength) {
         this.x = x
         this.y = y
-        this.color = color
+        this.teamId = teamId
         this.strength = strength || 1
     }
     toJson() {
         return {
             x: this.x,
             y: this.y,
-            color: this.color,
+            teamId: this.teamId,
             strength: this.strength
         }
     }

@@ -28,13 +28,22 @@ class Matrix {
             right: x < this.size - 1
         }
     }
+    set(x, y, tile) {
+        tile.x = x
+        tile.y = y
+        this.tiles[x][y] = tile
+        return tile
+    }
+    get(x, y) {
+        return this.tiles[x][y]
+    }
     /*
      * Iterate over the adjescent tiles for a given tile.
      *     X
      *   X X X
      *     X
      */
-    adjacentTiles(x, y) {
+    adjacent(x, y) {
         const tiles = []
         // Figure out which sides border the edge of the map, so we can
         // determine which sides have an adjecent tile.
@@ -64,7 +73,7 @@ class Matrix {
      *     X
      *   X   X
      */
-    diagonalTiles(x, y) {
+    diagonal(x, y) {
         const tiles = []
         const {
             up,
@@ -86,13 +95,21 @@ class Matrix {
         }
         return tiles
     }
+    startingTiles() {
+        return [
+            this.tiles[0][0],
+            this.tiles[this.size - 1][0],
+            this.tiles[0][this.size - 1],
+            this.tiles[this.size - 1][this.size - 1]
+        ]
+    }
     /*
      * Iterate over all tiles.
      *   X X X
      *   X X X
      *   X X X
      */
-    allTiles() {
+    all() {
         const tiles = []
         for (var x = 0; x < this.size; x++) {
             for (var y = 0; y < this.size; y++) {

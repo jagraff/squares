@@ -1,28 +1,23 @@
 function Game(canvas, socket, borderSize) {
+    // static, never changes
     this.canvas = canvas
+    this.renderer = new Renderer(this.canvas.getContext("2d"))
     this.borderSize = borderSize
     this.socket = socket
     // updated at run-time as neccesary
     this.canvasSize = this.calculateCanvasSize()
     // obtained from server
+    this.teams = []
     this.select = null
     this.color = null
     this.size = null
     this.matrix = null
-    this.renderer = null
     this.ready = false
 }
-Game.prototype.updateSize = function() {
-    this.setSize(this.calculateCanvasSize())
-    this.renderer.draw(this)
-}
-Game.prototype.setSize = function(size) {
-    this.canvasSize = size
-    // make sure the canvas has the correct dimensions
-    this.canvas.width = this.canvasSize;
-    this.canvas.height = this.canvasSize;
-    this.canvas.style.width = this.canvasSize + "px"
-    this.canvas.style.height = this.canvasSize + "px"
+Game.prototype.updateCanvasSize = function() {
+    this.canvasSize = this.calculateCanvasSize()
+    GameDom.updateCanvasSize(this.canvasSize)
+    this.redraw()
 }
 Game.prototype.calculateSquareSize = function() {
     return this.canvasSize / this.size
@@ -40,39 +35,41 @@ Game.prototype.calculateCanvasSize = function() {
     var size = Math.min(maxWidth, maxHeight)
     return size
 }
-Game.prototype.updateColor = function (color) {
-    this.color = color
-    var element = document.getElementById("color")
-    element.textContent = this.color
-    element.style.color = this.color
+Game.prototype.redraw = function() {
+    this.renderer.draw(this)
 }
-Game.prototype.updateWinner = function (winner) {
-    var element = document.getElementById("winner")
-    if (winner) {
-        element.textContent = winner.toUpperCase() + " WINS!"
-        element.style.color = winner
-    } else {
-        element.textContent = ""
+Game.prototype.updateTeams = function (teams) {
+    for (var i=0; i<teams.length; i++) {
+        const t = teams[i]
+        this.teams[t.id] = t
     }
+}
+Game.prototype.updateTeamId = function (teamId) {
+    this.teamId = teamId
+    GameDom.updateTeam(teamId)
+}
+Game.prototype.updateWinner = function (team) {
+    GameDom.updateWinner(team)
 }
 Game.prototype.updateTiles = function (tiles) {
     this.matrix.setTiles(tiles)
-    this.renderer.draw(this)
+    this.redraw()
 }
 Game.prototype.updateSelect = function (select) {
     this.select = select
-    this.renderer.draw(this)
+    this.redraw()
 }
 Game.prototype.updateConfig = function (config) {
     this.size = config.size
-    this.setSize(this.calculateCanvasSize())
-    this.updateColor(config.color)
-    this.matrix = new Matrix(this.size, function (x, y) {
-        return new Tile(x, y, "white", 1)
-    })
-    this.renderer = new Renderer(this.canvas.getContext('2d'), this.canvasSize)
-    this.matrix.setTiles(config.tiles)
-    this.renderer.draw(this)
+    this.teams = config.teams
+    
+    this.updateTeamId(config.teamId)
+    this.updateTeams(config.teams)
+    this.updateTiles(config.tiles)
+    
+    // update the size if neccesary
+    this.updateSize()
+    this.redraw()
     this.ready = true
 }
 Game.prototype.init = function () {
@@ -86,16 +83,16 @@ Game.prototype.init = function () {
     // calculate the location of the mouse with respect to the grid
     var calculateLocationFromEvent = function (event) {
         var x = (
-            event.clientX +
-            document.body.scrollLeft +
-            document.documentElement.scrollLeft -
-            canvas.offsetLeft
+            event.clientX
+            + document.body.scrollLeft
+            + document.documentElement.scrollLeft
+            - canvas.offsetLeft
         )
         var y = (
-            event.clientY +
-            document.body.scrollTop +
-            document.documentElement.scrollTop -
-            canvas.offsetTop
+            event.clientY
+            + document.body.scrollTop
+            + document.documentElement.scrollTop
+            - canvas.offsetTop
         )
         var squareSize = self.calculateSquareSize()
         var cx = Math.ceil(x / squareSize) - 1
@@ -125,11 +122,11 @@ Game.prototype.init = function () {
         g_lastSendMouseLocation = g_mouseLocation
     }, 250)
     // Handle window resizing.
-    $(window).resize(function() { self.updateSize(); });
+    $(window).resize(function() { self.updateCanvasSize(); });
     // Handle socket events.
     this.socket.on("tiles", function (tiles) { self.updateTiles(tiles) } )
     this.socket.on("config", function (config) { self.updateConfig(config) } )
-    this.socket.on("assign", function (color) { self.updateColor(color) } )
+    this.socket.on("assign", function (teamId) { self.updateTeamId(teamId) } )
     this.socket.on("winner", function (winner) { self.updateWinner(winner) } )
     this.socket.on("pending", function (select) { self.updateSelect(select) } )
     // Tell the server we're ready to join.

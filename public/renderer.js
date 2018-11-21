@@ -76,17 +76,19 @@ Renderer.prototype.drawTiles = function (game) {
                         "rgba(0,0,0,0.2)"
                     )
                 }
-                // highlight tiles which you can capture
-                var power = adjescentTilesForColor(x, y, game.color).length
-                var highlightColor = Color[game.color]._a(0.1).toString()
-                if (power > 0 && tile.color == "white") {
-                    this.fillRect(
-                        (x * squareSize) + offset,
-                        (y * squareSize) + offset,
-                        squareSize - (offset * 2),
-                        squareSize - (offset * 2),
-                        highlightColor
-                    )
+                if (game.color) {
+                    // highlight tiles which you can capture
+                    var power = adjescentTilesForColor(x, y, game.color).length
+                    var highlightColor = Color[game.color]._a(0.1).toString()
+                    if (power > 0 && tile.color == "white") {
+                        this.fillRect(
+                            (x * squareSize) + offset,
+                            (y * squareSize) + offset,
+                            squareSize - (offset * 2),
+                            squareSize - (offset * 2),
+                            highlightColor
+                        )
+                    }
                 }
             }
         }
