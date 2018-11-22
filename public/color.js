@@ -1,8 +1,11 @@
 function Color (r, g, b, a) {
-    this.r = r
-    this.g = g
-    this.b = b
+    this.r = Color.clamp(r)
+    this.g = Color.clamp(g)
+    this.b = Color.clamp(b)
     this.a = a || 1.0
+}
+Color.clamp = function(value) {
+    return Math.max(0, Math.min(value, 255))
 }
 Color.prototype.toString = function () {
     return (
@@ -14,21 +17,28 @@ Color.prototype.toString = function () {
         + ")"
     )
 }
-Color.prototype._r = function(r) {
-    this.r = r;
-    return this
+Color.prototype.scale = function(normal) {
+    return new Color(
+        Color.clamp(this.r * normal),
+        Color.clamp(this.g * normal, 255),
+        Color.clamp(this.b * normal, 255),
+        this.a
+    )
 }
-Color.prototype._g = function(g) {
-    this.g = g;
-    return this
+Color.prototype.darker = function() {
+    return this.scale(0.8)
 }
-Color.prototype._b = function(b) {
-    this.b = b;
-    return this
+Color.prototype.withR = function(r) {
+    return new Color(r, this.g, this.b, this.a)
 }
-Color.prototype._a = function(a) {
-    this.a = a;
-    return this
+Color.prototype.withG = function(g) {
+    return new Color(this.r, g, this.b, this.a)
+}
+Color.prototype.withB = function(b) {
+    return new Color(this.r, this.g, b, this.a)
+}
+Color.prototype.withA = function(a) {
+    return new Color(this.r, this.g, this.b, a)
 }
 Color.fromJson = function(json) {
     return new Color(json.r, json.g, json.b, json.a)
@@ -51,3 +61,4 @@ Color.fromHex = function(hex) {
 Color.red = new Color(255, 0, 0)
 Color.green = new Color(0, 255, 0)
 Color.blue = new Color(0, 0, 255)
+Color.white = new Color(255, 255, 255)

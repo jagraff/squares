@@ -48,7 +48,7 @@ Game.prototype.updateTeamId = function (teamId) {
     var team = this.teams[teamId]
     GameDom.updateTeam(team)
 }
-Game.prototype.updateWinner = function (teamId) {
+Game.prototype.updateWinnerId = function (teamId) {
     var team = this.teams[teamId]
     GameDom.updateWinner(team)
 }
@@ -57,6 +57,17 @@ Game.prototype.updateTiles = function (tiles) {
 }
 Game.prototype.updateSelect = function (select) {
     this.select = select
+}
+Game.prototype.adjacentTilesForTeamId = function (x, y, teamId) {
+    var tiles = []
+    var adjacentTiles = this.matrix.adjacentTiles(x, y)
+    for (var i = 0; i < adjacentTiles.length; i++) {
+        var tile = adjacentTiles[i]
+        if (tile.teamId == teamId) {
+            tiles.push(tile)
+        }
+    }
+    return tiles
 }
 Game.prototype.updateConfig = function (config) {
     this.size = config.size
@@ -143,7 +154,7 @@ Game.prototype.init = function () {
     })
     this.socket.on("winner", function (winner) {
         console.debug("update.winner", winner)
-        self.updateWinner(winner)
+        self.updateWinnerId(winner)
     })
     this.socket.on("pending", function (select) {
         console.debug("update.pending", select)

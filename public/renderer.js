@@ -44,21 +44,17 @@ Renderer.prototype.circle = function (x, y, radius, color) {
 Renderer.prototype.drawTiles = function (game) {
     var matrix = game.matrix
     var squareSize = game.calculateSquareSize()
-    
-    var adjacentTilesForTeamId = function (x, y, teamId) {
-        var tiles = []
-        var adjacentTiles = matrix.adjacentTiles(x, y)
-        for (var i = 0; i < adjacentTiles.length; i++) {
-            var tile = adjacentTiles[i]
-            if (tile.teamId == teamId) {
-                tiles.push(tile)
-            }
-        }
-        return tiles
-    }
     for (var x = 0; x < matrix.size; x++) {
         for (var y = 0; y < matrix.size; y++) {
             var tile = matrix.tiles[x][y]
+            var teamColor = game.teams[game.teamId].color
+            // teamId null maps to tileId white
+            // kinda hacky, would be nice to clean this up
+            var tileColor = (
+                tile.teamId !== null
+                ? game.teams[tile.teamId].color
+                : Color.white
+            )
             if (tile.teamId !== null) {
                 var offset = 0
                 this.fillRect(
@@ -66,7 +62,7 @@ Renderer.prototype.drawTiles = function (game) {
                     (y * squareSize) + offset,
                     squareSize - (offset * 2),
                     squareSize - (offset * 2),
-                    game.teams[tile.teamId].color.toString()
+                    tileColor
                 )
                 if (tile.strength == 2) {
                     this.fillRect(
@@ -77,20 +73,18 @@ Renderer.prototype.drawTiles = function (game) {
                         "rgba(0,0,0,0.2)"
                     )
                 }
-                if (game.teamId !== null) {
-                    // highlight tiles which you can capture
-                    var power = adjacentTilesForTeamId(x, y, game.teamId).length
-                    // var highlightColor = Color[game.color]._a(0.1).toString()
-                    var highlightColor = "rgba(255, 255, 255, 0.2)"
-                    if (power > 0 && tile.teamId === null) {
-                        this.fillRect(
-                            (x * squareSize) + offset,
-                            (y * squareSize) + offset,
-                            squareSize - (offset * 2),
-                            squareSize - (offset * 2),
-                            highlightColor
-                        )
-                    }
+            } else {
+                // highlight tiles which you can capture
+                var power = game.adjacentTilesForTeamId(x, y, game.teamId).length
+                var highlightColor = teamColor.withA(0.1)
+                if (power > 0 && tile.teamId === null) {
+                    this.fillRect(
+                        (x * squareSize) + offset,
+                        (y * squareSize) + offset,
+                        squareSize - (offset * 2),
+                        squareSize - (offset * 2),
+                        highlightColor
+                    )
                 }
             }
         }
