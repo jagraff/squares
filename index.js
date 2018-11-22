@@ -9,6 +9,7 @@ var io = require('socket.io')(server)
 var port = process.env.PORT || 3000
 
 const Game = require('./server/game.js')
+const Config = require('./server/config.js')
 var size = 6
 var game = new Game(io, size)
 
@@ -21,7 +22,7 @@ app.use(express.static(path.join(__dirname, 'static')))
 
 setInterval(function() {
   game.updateIfRunning()
-}, 500)
+}, Config.UPDATE_INTERVAL)
 
 io.on('connection', (socket) => {
   socket.on('join', () => {

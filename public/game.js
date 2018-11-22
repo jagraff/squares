@@ -141,6 +141,15 @@ Game.prototype.init = function () {
     this.socket.on("tiles", function (tiles) {
         console.debug("update.tiles", tiles)
         self.updateTiles(tiles)
+
+        // HACK
+        // After every new turn, clear out the last mouse location.
+        // This way, if the player moves their mouse to a tile before the
+        // next turn starts, we'll send an update.
+        // (otherwise you will sometimes move your mouse on to a tile without
+        // it being selected, which is annoying)
+        g_lastSendMouseLocation = {}
+
         self.redraw();
     })
     this.socket.on("config", function (config) {

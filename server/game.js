@@ -4,6 +4,7 @@ const Tile = require('./tile.js')
 const Point = require('./point.js')
 const Team = require('./team.js')
 const Color = require('./color.js')
+const Config = require('./config.js')
 function groupBy(list, keyGetter) {
     const map = {}
     list.forEach((item) => {
@@ -197,7 +198,7 @@ class Game {
             console.log(`[*] ${winner} won the game`)
             // Stop updating the game.
             this.running = false
-            setTimeout(() => this.reset(), 1000)
+            setTimeout(() => this.reset(), Config.RESET_INTERVAL)
         }
     }
     findTeam() {
