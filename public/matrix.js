@@ -31,7 +31,7 @@ Matrix.prototype.checkBorders = function (x, y) {
 Matrix.prototype.adjacentTiles = function (x, y) {
     var tiles = []
     // Figure out which sides border the edge of the map, so we can
-    // determine which sides have an adjecent tile.
+    // determine which sides have an adjacent tile.
     var border = this.checkBorders(x, y)
     var up = border.up
     var left = border.left

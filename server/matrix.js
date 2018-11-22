@@ -5,16 +5,21 @@ class Matrix {
      */
     constructor(size, createTileCallback) {
         this.size = size
+        this.createTileCallback = createTileCallback
         this.tiles = []
-        for (var x = 0; x < size; x++) {
+        this.clear()
+    }
+    clear() {
+        this.tiles = []
+        for (var x = 0; x < this.size; x++) {
             this.tiles[x] = []
-            for (var y = 0; y < size; y++) {
-                this.tiles[x][y] = createTileCallback(x, y)
+            for (var y = 0; y < this.size; y++) {
+                this.set(x, y, createTileCallback())
             }
         }
     }
     /*
-     * Check each border for an adjescent tile.
+     * Check each border for an adjacent tile.
      * Up, Down, Left, Right.
      *     X
      *   X X X
@@ -32,13 +37,13 @@ class Matrix {
         tile.x = x
         tile.y = y
         this.tiles[x][y] = tile
-        return tile
+        return this
     }
     get(x, y) {
         return this.tiles[x][y]
     }
     /*
-     * Iterate over the adjescent tiles for a given tile.
+     * Iterate over the adjacent tiles for a given tile.
      *     X
      *   X X X
      *     X
@@ -46,7 +51,7 @@ class Matrix {
     adjacent(x, y) {
         const tiles = []
         // Figure out which sides border the edge of the map, so we can
-        // determine which sides have an adjecent tile.
+        // determine which sides have an adjacent tile.
         const {
             up,
             down,

@@ -22,7 +22,7 @@ class Game {
         this.io = io
         this.size = size
         // create an empty map
-        this.world = new Matrix(size, (x, y) => new Tile(x, y, null, 1))
+        this.world = new Matrix(size, (x, y) => new Tile(null, 1))
         this.teams = [
             new Team(0, "red", Color.RED),
             new Team(1, "green", Color.GREEN),
@@ -58,28 +58,32 @@ class Game {
         }
         // create each player's starting point
         const self = this
-        tiles.forEach(function (tile, index) {
-            self.map.tiles[tile.x][tile.y].teamId = self.teams[index].id
+        tiles.forEach((original) => {
+            const teamId = this.teams[index].id
+            const tile = new Tile(teamId, 1)
+            this.world.set(original.x, original.y, tile)
         })
     }
     reset() {
-        // create an empty map
-        this.world = new Matrix(this.size, (x, y) => new Tile(x, y, "white", 1))
+        // create an empty world
+        this.world.clear()
         // create each players starting point
         this.initTeams()
         // send all tiles
-        this.io.emit("tiles", this.tilesToJson())
+        this.io.emit("tiles", this.tilesJson())
         this.io.emit("winner", false)
         this.running = true
     }
     addPlayer(player) {
+        // remember this player
         this.socketToPlayer[player.socket.id] = player
         this.players.push(player)
         // send game configuration to player
         player.socket.emit("config", {
             size: this.size,
+            teamId: player.teamId,
             teams: this.teams.map(team => team.toJson()),
-            tiles: this.tilesToJson()
+            tiles: this.tilesJson()
         })
         console.log(`[*] ${player.toString()} joined the game.`)
     }
@@ -95,15 +99,15 @@ class Game {
     countEmptyTiles() {
         return this.world.all().filter((tile) => tile.teamId === null)
     }
-    adjescentTilesForTeam(x, y, teamId) {
+    adjacentTilesForTeam(x, y, teamId) {
         return this.world.adjacent(x, y).filter(tile => tile.teamId === teamId)
     }
     // Serialize the whole map so we can send it through socket.io.
-    tilesToJson() {
+    tilesJson() {
         return this.world.all().map((tile) => tile.toJson())
     }
-    setTile(x, y, teamId, strength) {
-        const tile = new Tile(x, y, teamId, strength)
+    updateTile(x, y, teamId, strength) {
+        const tile = new Tile(teamId, strength)
         this.world.set(x, y, tile)
         // tell every client about the updated tile
         this.io.emit("tiles", [tile.toJson()])
@@ -117,7 +121,7 @@ class Game {
             // discard players which don't have a pending move
             .filter(p => p.pendingMove)
             // discard illegal moves
-            .filter(p => this.adjescentTilesForTeam(p.pendingMove.x, p.pendingMove.y, p.teamId).length > 0)
+            .filter(p => this.adjacentTilesForTeam(p.pendingMove.x, p.pendingMove.y, p.teamId).length > 0)
         )
         // group together players who are attacking the same tile
         const battles = groupBy(
@@ -134,34 +138,34 @@ class Game {
             const teamId = winner.teamId
             // tile which is being captured
             const tile = this.world.get(x, y)
-            // how many tiles does this player have adjescent to the tile being capture?
-            const power = this.adjescentTilesForTeam(x, y, teamId).length
+            // how many tiles does this player have adjacent to the tile being capture?
+            const power = this.adjacentTilesForTeam(x, y, teamId).length
             // If the original tile is white, capture is successful.
             if (tile.teamId === null) {
-                this.setTile(x, y, teamId, 1)
+                this.updateTile(x, y, teamId, 1)
             }
-            // If we're capturing an enemy tile, your power (number of adjescent tiles)
+            // If we're capturing an enemy tile, your power (number of adjacent tiles)
             // must be greater than the strength (so an upgraded tile must be surrounded on 3 sides to be captured)
             else if (tile.teamId !== teamId) {
                 switch (tile.strength) {
                     // If the tile strength is less than or equal to 1, capture is successful
                     case 0:
                     case 1:
-                        this.setTile(x, y, teamId, 1)
+                        this.updateTile(x, y, teamId, 1)
                         break
-                    // If tile strength is 2, you must have at least 2 adjescent tiles to capture it.
+                    // If tile strength is 2, you must have at least 2 adjacent tiles to capture it.
                     case 2:
                         if (power >= 2) {
-                            this.setTile(x, y, teamId, 1)
+                            this.updateTile(x, y, teamId, 1)
                         }
                         break;
                 }
             }
             // If we're capturing our own tile...
             else {
-                // ... and the tile strength == 1, and we have 3 adjescent tiles, then it may be upgraded to strength == 2
+                // ... and the tile strength == 1, and we have 3 adjacent tiles, then it may be upgraded to strength == 2
                 if (tile.strength == 1 && power > 3) {
-                    this.setTile(x, y, teamId, 2)
+                    this.updateTile(x, y, teamId, 2)
                 }
             }
         })
@@ -236,7 +240,7 @@ class Game {
             if (point) {
                 if (point.withinBounds(this.size)) {
                     const tile = this.world.get(point.x, point.y)
-                    const power = this.adjescentTilesForColor(point.x, point.y, player.teamId).length
+                    const power = this.adjacentTilesForColor(point.x, point.y, player.teamId).length
                     const canUpgrade = (tile.teamId == player.teamId && tile.strength == 1 && power > 3)
                     const canAttack = (tile.teamId != player.teamId && power > 0)
                     if (canAttack || canUpgrade) {

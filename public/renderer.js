@@ -44,11 +44,11 @@ Renderer.prototype.circle = function (x, y, radius, color) {
 Renderer.prototype.drawTiles = function (game) {
     var matrix = game.matrix
     var squareSize = game.calculateSquareSize()
-    var adjescentTilesForColor = function (x, y, color) {
+    var adjacentTilesForColor = function (x, y, color) {
         var tiles = []
-        var adjecentTiles = matrix.adjacentTiles(x, y)
-        for (var i = 0; i < adjecentTiles.length; i++) {
-            var tile = adjecentTiles[i]
+        var adjacentTiles = matrix.adjacentTiles(x, y)
+        for (var i = 0; i < adjacentTiles.length; i++) {
+            var tile = adjacentTiles[i]
             if (tile.color == color) {
                 tiles.push(tile)
             }
@@ -78,7 +78,7 @@ Renderer.prototype.drawTiles = function (game) {
                 }
                 if (game.color) {
                     // highlight tiles which you can capture
-                    var power = adjescentTilesForColor(x, y, game.color).length
+                    var power = adjacentTilesForColor(x, y, game.color).length
                     var highlightColor = Color[game.color]._a(0.1).toString()
                     if (power > 0 && tile.color == "white") {
                         this.fillRect(
