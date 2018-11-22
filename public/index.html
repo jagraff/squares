@@ -13,9 +13,9 @@
 
   
   <div class="top-bar top-bar-text">
-    Team: <span id="color">Red</span>
+    Team: <span id="team">Unassigned</span>
   </div>
-  <div class="top-space">
+  <div class="top-space" id="winner">
   </div>
 
   <div
@@ -26,7 +26,6 @@
     class="container">
     <div id="inner-container">
       <canvas id="canvas"></canvas>
-      <p id="winner"></p>
     </div>
   </div>
 
@@ -34,14 +33,16 @@
     <button>Create Lobby</button>
   </div> -->
 
-  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script src="/jquery.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <!-- GAME -->
+  <script src="/gamedom.js"></script>
   <script src="/game.js"></script>
   <script src="/matrix.js"></script>
   <script src="/tile.js"></script>
   <script src="/renderer.js"></script>
   <script src="/color.js"></script>
+  <script src="/team.js"></script>
   <script src="/main.js"></script>
   <!-- LIVERELOAD -->
   <script>

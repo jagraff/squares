@@ -44,12 +44,13 @@ Renderer.prototype.circle = function (x, y, radius, color) {
 Renderer.prototype.drawTiles = function (game) {
     var matrix = game.matrix
     var squareSize = game.calculateSquareSize()
-    var adjacentTilesForColor = function (x, y, color) {
+    
+    var adjacentTilesForTeamId = function (x, y, teamId) {
         var tiles = []
         var adjacentTiles = matrix.adjacentTiles(x, y)
         for (var i = 0; i < adjacentTiles.length; i++) {
             var tile = adjacentTiles[i]
-            if (tile.color == color) {
+            if (tile.teamId == teamId) {
                 tiles.push(tile)
             }
         }
@@ -58,14 +59,14 @@ Renderer.prototype.drawTiles = function (game) {
     for (var x = 0; x < matrix.size; x++) {
         for (var y = 0; y < matrix.size; y++) {
             var tile = matrix.tiles[x][y]
-            if (tile.color) {
+            if (tile.teamId !== null) {
                 var offset = 0
                 this.fillRect(
                     (x * squareSize) + offset,
                     (y * squareSize) + offset,
                     squareSize - (offset * 2),
                     squareSize - (offset * 2),
-                    tile.color
+                    game.teams[tile.teamId].color.toString()
                 )
                 if (tile.strength == 2) {
                     this.fillRect(
@@ -76,11 +77,12 @@ Renderer.prototype.drawTiles = function (game) {
                         "rgba(0,0,0,0.2)"
                     )
                 }
-                if (game.color) {
+                if (game.teamId !== null) {
                     // highlight tiles which you can capture
-                    var power = adjacentTilesForColor(x, y, game.color).length
-                    var highlightColor = Color[game.color]._a(0.1).toString()
-                    if (power > 0 && tile.color == "white") {
+                    var power = adjacentTilesForTeamId(x, y, game.teamId).length
+                    // var highlightColor = Color[game.color]._a(0.1).toString()
+                    var highlightColor = "rgba(255, 255, 255, 0.2)"
+                    if (power > 0 && tile.teamId === null) {
                         this.fillRect(
                             (x * squareSize) + offset,
                             (y * squareSize) + offset,

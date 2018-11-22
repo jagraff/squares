@@ -14,7 +14,7 @@ class Matrix {
         for (var x = 0; x < this.size; x++) {
             this.tiles[x] = []
             for (var y = 0; y < this.size; y++) {
-                this.set(x, y, createTileCallback())
+                this.set(x, y, this.createTileCallback())
             }
         }
     }

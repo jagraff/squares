@@ -17,6 +17,7 @@ server.listen(port, () => {
 })
 
 app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'static')))
 
 setInterval(function() {
   game.updateIfRunning()

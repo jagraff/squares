@@ -1,12 +1,7 @@
-/* Fix user-agent */
+
 
 * {
   box-sizing: border-box;
-}
-
-html {
-  /* font-weight: 300; */
-  /* -webkit-font-smoothing: antialiased; */
 }
 
 html, input, body {
@@ -26,32 +21,27 @@ html, body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background: white;
+  background: gray;
 }
 
 .container {
-  /* width: 100%;
-  height: 100%; */
   margin: 0;
   padding: 0;
   border: 0;
-  /* padding-top: 32px; */
 }
 
 #inner-container {
-  /* width: 800px;
-  height: 1000px; */
   display: block;
   margin: auto;
 }
 
 #winner {
-  font-weight: bold;
-  font-size: 32px;
+  font-size: 14px;
+  text-align: center;
+  line-height: 40px;
 }
 
 .top-bar {
-  /* background: #333; */
   background: #efefef;
   height: 40px;
   width: 100%;
@@ -75,8 +65,9 @@ html, body {
   text-align: center;
   /* should be same as top-bar.height */
   line-height: 40px;
-  /* display: inline-block;
-  vertical-align: middle; */
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
 
 #color {
@@ -87,8 +78,6 @@ html, body {
 canvas {
   display: block;
   margin: auto;
-  /* width: 800px;
-  height: 800px; */
   border: solid 1px black;
   -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.5);
   -moz-box-shadow: 0 0 10px rgba(0,0,0,0.5);

@@ -29,12 +29,6 @@ class Game {
             new Team(2, "blue", Color.BLUE),
             new Team(3, "purple", Color.PURPLE)
         ]
-        this.colors = [
-            "red",
-            "green",
-            "purple",
-            "blue"
-        ]
         this.initTeams()
         // -- should this be seperated?
         // associate a socket.id to a player object
@@ -57,8 +51,7 @@ class Game {
             throw new Error(`There are more teams (${this.teams.length}) than starting tiles (${tiles.length}), can not initialize teams.`)
         }
         // create each player's starting point
-        const self = this
-        tiles.forEach((original) => {
+        tiles.forEach((original, index) => {
             const teamId = this.teams[index].id
             const tile = new Tile(teamId, 1)
             this.world.set(original.x, original.y, tile)
@@ -171,9 +164,11 @@ class Game {
         })
         // remove all pending moves
         this.players.forEach(function (p) {
-            p.pendingMove = null
-            // tell the client that we have consumed their pending move.
-            p.socket.emit("pending", {})
+            if (p.pendingMove !== null) {
+                p.pendingMove = null
+                // tell the client that we have consumed their pending move.
+                p.socket.emit("pending", {})
+            }
         })
         // Keep track of how many updates we've processed.
         this.updateCounter += 1
@@ -187,7 +182,7 @@ class Game {
     }
     checkForWinner() {
         // excluding white tiles, because "white" is not a player
-        const allTiles = this.world.allTiles().filter(t => t.teamId !== null)
+        const allTiles = this.world.all().filter(t => t.teamId !== null)
         // group together tiles of the same teamId
         const tilesByColor = groupBy(
             allTiles,
@@ -218,7 +213,7 @@ class Game {
     handleSocketConnect(socket) {
         const team = this.findTeam()
         if (team) {
-            const player = new Player(socket, team)
+            const player = new Player(socket, team.id)
             this.addPlayer(player)
         } else {
             console.log(`[!] socket(${socket.id}) attempted to join full game`)
@@ -240,7 +235,7 @@ class Game {
             if (point) {
                 if (point.withinBounds(this.size)) {
                     const tile = this.world.get(point.x, point.y)
-                    const power = this.adjacentTilesForColor(point.x, point.y, player.teamId).length
+                    const power = this.adjacentTilesForTeam(point.x, point.y, player.teamId).length
                     const canUpgrade = (tile.teamId == player.teamId && tile.strength == 1 && power > 3)
                     const canAttack = (tile.teamId != player.teamId && power > 0)
                     if (canAttack || canUpgrade) {

@@ -1,6 +1,6 @@
-function Tile(x, y, color, strength) {
+function Tile(x, y, teamId, strength) {
     this.x = x
     this.y = y
-    this.color = color
+    this.teamId = teamId
     this.strength = strength || 1
 }

@@ -12,7 +12,10 @@ class Tile {
      *     The disadvantge is it costs you 1 turn.
      */
     constructor(teamId, strength) {
-        this.teamId = teamId || null
+        if (typeof teamId === "undefined") {
+            throw new Error("undefined teamId")
+        }
+        this.teamId = teamId
         this.strength = strength || 1
         // tile will not receive an x or y until it is "set" into a matrix
         this.x = null

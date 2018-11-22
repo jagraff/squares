@@ -23,7 +23,7 @@ class Color {
     }
 }
 Color.RED = new Color(255, 0, 0)
-Color.GREEN = new Color(255, 0, 0)
-Color.BLUE = new Color(255, 0, 0)
+Color.GREEN = new Color(0, 255, 0)
+Color.BLUE = new Color(0, 0, 255)
 Color.PURPLE = new Color(128, 20, 128)
 module.exports = Color

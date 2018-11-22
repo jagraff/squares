@@ -30,6 +30,9 @@ Color.prototype._a = function(a) {
     this.a = a;
     return this
 }
+Color.fromJson = function(json) {
+    return new Color(json.r, json.g, json.b, json.a)
+}
 Color.fromHex = function(hex) {
     // credit: https://stackoverflow.com/a/5624139
     // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
