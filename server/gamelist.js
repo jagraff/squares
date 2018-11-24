@@ -36,8 +36,16 @@ class GameList {
     gameToJson (g) {
         const id = g.id
         const name = g.name
-        const players = g.players.length
-        const size = g.size
+        const players = (
+            g.players.length
+            + " / " 
+            + g.teams.length
+        )
+        const size = (
+            g.size
+            + "x"
+            + g.size
+        )
         const status = "join"
         const game = {id,name,players,size,status}
         return game

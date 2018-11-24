@@ -44,15 +44,17 @@ var initMenu = function (io) {
     socket.on("game.join", handleGameNamespaceId)
     // handle creating new games
     var createPlayersInput = document.getElementById("create-players")
-    var createNameInput = document.getElementById("create-name")
+    // var createNameInput = document.getElementById("create-name")
     var createSizeInput = document.getElementById("create-size")
     var createButton = document.getElementById("create-button")
     var handleCreateButtonClick = function (event) {
       var maxPlayers = createPlayersInput.value
-      var name = createNameInput.value
+      createPlayersInput.value = ""
+    //   var name = createNameInput.value
       var size = createSizeInput.value
+      createSizeInput.value = ""
       var game = {
-        name: name,
+        // name: name,
         size: size,
         maxPlayers: maxPlayers
       }
