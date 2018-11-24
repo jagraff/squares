@@ -5,7 +5,9 @@
 }
 
 html, body, div, canvas {
-    /* disable iOS weird select flicker */
+    /* disable ios tap highlight
+     * tapping the canvas shouldn't cause any visual side effects
+     */
     -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
@@ -18,7 +20,7 @@ html, input, body {
   Arial,
   "Lucida Grande",
   sans-serif;
-  font-size: 24px;
+  font-size: 16px;
 }
 
 html, body {
@@ -67,6 +69,7 @@ html, body {
   text-transform: uppercase;
   text-align: center;
   /* should be same as top-bar.height */
+  font-weight: bold;
   line-height: 40px;
   margin: 0;
   padding: 0;

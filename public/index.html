@@ -5,40 +5,72 @@
   <meta charset="UTF-8">
   <title>conflict</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="menu.css">
+
   <meta charset='utf-8'>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
 </head>
 
 <body>
 
-  
   <div class="top-bar top-bar-text">
-    Team: <span id="team">Unassigned</span>
+    <span id="top-bar-message">
+      conflict
+    </span>
   </div>
+
+  <canvas id="canvas" style="display: none">
+  </canvas>
+
   <div class="top-space" id="winner">
-    <!-- <canvas id="time-canvas"></canvas> -->
   </div>
 
-  <div
-    style="-moz-user-select: none; -webkit-user-select: none; -ms-user-select:none; user-select:none;-o-user-select:none;"
-    unselectable="on"
-    onselectstart="return false;"
-    onmousedown="return false;"
-    class="container">
-    <div id="inner-container">
-      <canvas id="canvas"></canvas>
-    </div>
-  </div>
+  <table id="menu" class="menu" style="width: 80%;">
+    <tbody id="menu-table">
+      <tr>
+        <td>SERVER LIST</td>
+        <td>players</td>
+        <td>world size</td>
+        <td>status</td>
+      </tr>
 
-  <!-- <div>
-    <button>Create Lobby</button>
-  </div> -->
+      <!-- <tr class="create-header">
+        <td>new game</td>
+        <td>max players</td>
+        <td>world size</td>
+        <td>status</td>
+      </tr> -->
+
+      <tr class="create">
+        <td>
+          <input id="create-name" min="1" max="10" placeholder="name" value="">
+          </input>
+        </td>
+        <td>
+          <input id="create-players" type="number" min="1" max="10" placeholder="max players" value="">
+          </input>
+        </td>
+        <td>
+          <input id="create-size" type="number" min="1" max="10" placeholder="world size" value="">
+          </input>
+        </td>
+        <td>
+          <button id="create-button">
+            create
+          </button>
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
 
   <script src="/jquery.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <!-- GAME -->
   <script src="/gamedom.js"></script>
+  <script src="/menudom.js"></script>
   <script src="/game.js"></script>
+  <script src="/menu.js"></script>
   <script src="/matrix.js"></script>
   <script src="/tile.js"></script>
   <script src="/renderer.js"></script>
@@ -46,9 +78,7 @@
   <script src="/team.js"></script>
   <script src="/main.js"></script>
   <!-- LIVERELOAD -->
-  <script>
-    document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] +
-      ':35729/livereload.js?snipver=1"></' + 'script>')
+  <script src="http://localhost:35729/livereload.js?snipver=1">
   </script>
 </body>
 

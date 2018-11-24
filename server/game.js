@@ -5,6 +5,7 @@ const Point = require('./point.js')
 const Team = require('./team.js')
 const Color = require('./color.js')
 const Config = require('./config.js')
+
 function groupBy(list, keyGetter) {
     const map = {}
     list.forEach((item) => {
@@ -19,8 +20,11 @@ function groupBy(list, keyGetter) {
     return Object.keys(map).map(key => map[key])
 }
 class Game {
-    constructor(io, size) {
-        this.io = io
+    constructor(id, namespace, namespaceId, size) {
+        this.id = id
+        this.name = "Game: " + id
+        this.namespace = namespace
+        this.namespaceId = namespaceId
         this.size = size
         // create an empty map
         this.world = new Matrix(size, (x, y) => new Tile(null, 1))
@@ -30,6 +34,7 @@ class Game {
             new Team(2, "blue", Color.BLUE),
             new Team(3, "purple", Color.PURPLE)
         ]
+        // place the teams on the board
         this.initTeams()
         // -- should this be seperated?
         // associate a socket.id to a player object
@@ -37,10 +42,32 @@ class Game {
         this.running = true
         // flat list of players
         this.players = []
-        // list of spectators
+        // TODO: list of spectators?
         this.spectators = []
         // store each time a tile is modified
         this.updates = []
+        // handle new connections
+        this.namespace.on('connection', (socket) => {
+            socket.on('join', () => {
+                this.handleSocketConnect(socket)
+            })
+            socket.on('click', (message) => {
+                this.handleSocketClick(socket, message)
+            })
+            socket.on('disconnect', () => {
+                this.handleSocketDisconnect(socket)
+            })
+        })
+    }
+    toString() {
+        return `Game(${this.id}, ${this.namespaceId})`
+    }
+    /**
+     * Returns `true` if this game has space available
+     * for another player.
+     */
+    isAvailable() {
+        return (this.teams.length > this.players.length)
     }
     /**
      * Place the starting tiles for each team
@@ -64,8 +91,8 @@ class Game {
         // create each players starting point
         this.initTeams()
         // send all tiles
-        this.io.emit("tiles", this.tilesJson())
-        this.io.emit("winner", false)
+        this.namespace.emit("tiles", this.tilesJson())
+        this.namespace.emit("winner", false)
         this.running = true
     }
     addPlayer(player) {
@@ -105,11 +132,15 @@ class Game {
         const tile = new Tile(teamId, strength)
         this.world.set(x, y, tile)
         // tell every client about the updated tile
-        this.io.emit("tiles", [tile.toJson()])
+        this.namespace.emit("tiles", [tile.toJson()])
         console.log(`[*] set tile ${tile.toJson()}`)
     }
     // Process 1 turn.
-    update() {
+    tick() {
+        // only tick if running
+        if (!this.running) {
+            return
+        }
         // determine which players are attempting a legal move
         const players = (
             this.players
@@ -148,7 +179,7 @@ class Game {
                     case 1:
                         this.updateTile(x, y, teamId, 1)
                         break
-                    // If tile strength is 2, you must have at least 2 adjacent tiles to capture it.
+                        // If tile strength is 2, you must have at least 2 adjacent tiles to capture it.
                     case 2:
                         if (power >= 2) {
                             this.updateTile(x, y, teamId, 1)
@@ -175,14 +206,9 @@ class Game {
         // Keep track of how many updates we've processed.
         this.updateCounter += 1
 
-        this.io.emit('turnEnd')
+        this.namespace.emit('turnEnd')
         // Check if someone has won the game.
         this.checkForWinner()
-    }
-    updateIfRunning() {
-        if (this.running) {
-            this.update()
-        }
     }
     checkForWinner() {
         // excluding white tiles, because "white" is not a player
@@ -197,7 +223,7 @@ class Game {
             // Figure out which teamId won by peeking at one of their tiles.
             const winner = tilesByColor[0][0].teamId
             // Tell the clients who won.
-            this.io.emit('winner', winner)
+            this.namespace.emit('winner', winner)
             console.log(`[*] ${winner} won the game`)
             // Stop updating the game.
             this.running = false

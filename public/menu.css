@@ -1,0 +1,90 @@
+.menu {
+    width: 80%;
+    height: 200px;
+    margin: auto;
+    border-collapse: collapse;
+}
+
+.menu tr {
+    text-transform: lowercase;
+    margin: 0;
+    border: 0;
+    padding: 0;
+}
+
+.menu tr:nth-child(even) {
+    background: #efefef;
+}
+
+.menu tr:nth-child(odd) {
+    background: #dfdfdf;
+}
+
+.menu tr:first-child {
+    background: white;
+}
+
+.menu td {
+    padding: 0px;
+    margin: 0;
+    border: 0;
+    height: 100%;
+    /* background: red; */
+}
+
+.menu tr {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.menu tr:hover {
+    background: white;
+}
+
+.menu input {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: none;
+    background: inherit;
+}
+
+/* last row of the "server list" will be an input form to create a new server
+ */
+
+.menu .create td {
+    /* background: white; */
+}
+
+.menu .create-header td {
+    background: white;
+}
+
+/* placeholder text is needed in the empty row to maintain alignment.
+ * but there's no reason for it to be visibile. 
+ */
+.menu .create-header :nth-child(n+2) {
+    color: white;
+}
+
+.menu button:hover {
+    /* background: #ccffcc; */
+    cursor: pointer;
+}
+
+.menu button {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    background: inherit;
+    /* background: white; */
+    font-family: inherit;
+    font-size: inherit;
+    text-align: left;
+}

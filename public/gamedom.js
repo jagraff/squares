@@ -1,24 +1,26 @@
 /**
- * Functions for manipulating the DOM. (excluding the canvas)
+ * Functions for manipulating the DOM during gameplay.
  */
 var GameDom = {
+    updateTopBarMessage: function(message, color) {
+        var element = document.getElementById("top-bar-message")
+        if (element) {
+            element.textContent = message
+            element.style.color = color
+        } else {
+            throw new Error("Couldn't find #team element.")
+        }
+    },
     /**
      * Display current players team.
      * @param {string} team.color
      * @param {string} team.name
      */
     updateTeam: function (team) {
-        var element = document.getElementById("team")
-        if (element) {
-            if (team) {
-                element.textContent = team.name
-                element.style.color = team.color
-            } else {
-                element.textContent = "unassigned"
-                element.style.color = "black"
-            }
+        if (team) {
+            this.updateTopBarMessage("Team: " + team.name, team.color)
         } else {
-            throw new Error("Couldn't find #team element.")
+            this.updateTopBarMessage("Waiting...", "black")
         }
     },
     /**

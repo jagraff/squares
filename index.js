@@ -1,6 +1,7 @@
 
 
 // Setup basic express server
+const Config = require('./server/config.js')
 var express = require('express')
 var app = express()
 var path = require('path')
@@ -8,30 +9,17 @@ var server = require('http').createServer(app)
 var io = require('socket.io')(server)
 var port = process.env.PORT || 3000
 
-const Game = require('./server/game.js')
-const Config = require('./server/config.js')
-
-var game = new Game(io, Config.SIZE)
-
+// serve static assets, probably move this to CDN at some point
+app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'static')))
 server.listen(port, () => {
   console.log('Server listening at port %d', port)
 })
 
-app.use(express.static(path.join(__dirname, 'public')))
-app.use(express.static(path.join(__dirname, 'static')))
+const GameList = require('./server/gamelist.js')
+const gamelist = new GameList(io)
 
+// update the games at our predefined interval
 setInterval(function() {
-  game.updateIfRunning()
+  gamelist.tick()
 }, Config.UPDATE_INTERVAL)
-
-io.on('connection', (socket) => {
-  socket.on('join', () => {
-    game.handleSocketConnect(socket)
-  })
-  socket.on('click', (message) => {
-    game.handleSocketClick(socket, message)
-  })
-  socket.on('disconnect', () => {
-    game.handleSocketDisconnect(socket)
-  })
-})

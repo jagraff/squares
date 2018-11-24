@@ -2,10 +2,28 @@
 ## done
 - if you click an invalid move AND you had a valid move selected, it should keep the valid move
 - NO CLICK neccesary, automatically capture whatever is under your mouse
+
+# refactoring
+- seperate networking code from game logic code
+- GameServer & Game classes
+- Packet classes for different message types
+- maybe switch to typescript?
+- why doesn't my linter stop me from making mistakes
+
+- seperate the business logic of the game from everything else?
+    - purely functional?
+    - game = tick(game, inputs)
+
+- unit tests, for the love of god
+
+# add more competative elements
+- stats: high score, win/loss ratio, etc.
+
 # probably wont implement
 - aim correction, decreasing "wasted clicks" (feels bad)
     - if you click right next to a tile that is valid, it should auto-correct to the valid tile
 - turn-selection animation should happen immediatly on the UI side
+
 ## core gameplay idea
 - visualize the duration of a turn, maybe with a bar at the bottom
 - have a time period for taking turns and a pause afterwards

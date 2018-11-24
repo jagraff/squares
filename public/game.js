@@ -1,8 +1,8 @@
-function Game(canvas, socket, borderSize) {
+function Game(canvas, socket) {
     // static, never changes
     this.canvas = canvas
     this.renderer = new Renderer(this.canvas.getContext("2d"))
-    this.borderSize = borderSize
+    this.borderSize = 40
     this.socket = socket
     // updated at run-time as neccesary
     this.canvasSize = this.calculateCanvasSize()
@@ -42,7 +42,9 @@ Game.prototype.calculateCanvasSize = function () {
     return size
 }
 Game.prototype.redraw = function () {
-    this.renderer.draw(this)
+    if (this.ready) {
+        this.renderer.draw(this)
+    }
 }
 Game.prototype.updateTeams = function (teams) {
     for (var i = 0; i < teams.length; i++) {
@@ -135,28 +137,28 @@ Game.prototype.init = function () {
     setInterval(function () {
         // only send the new mouse location IF the mouse has moved.
         if (!pointEquals(g_mouseLocation, g_lastSendMouseLocation)) {
+            // uncomment this line to enable mouse-hover clicks
             // self.socket.emit('click', g_mouseLocation)
         }
         g_lastSendMouseLocation = g_mouseLocation
     }, 250)
 
     // Set an interval to redraw the time bar
-    setInterval(function () {
-        var elapsedTime = Date.now() - self.turnStartTime
+    // setInterval(function () {
+        // var elapsedTime = Date.now() - self.turnStartTime
         // clamp
-        elapsedTime = Math.max(0, Math.min(elapsedTime, self.updateInterval))
-        self.elapsedTime = elapsedTime
+        // elapsedTime = Math.max(0, Math.min(elapsedTime, self.updateInterval))
+        // self.elapsedTime = elapsedTime
         // var normal = elapsedTime / 1000.0
         // GameDom.updateTimeBar(normal)
         // self.redraw()
-    }, 10)
+    // }, 10)
     // TODO: is it better to keep an animation loop - or to redraw only when neccesary?
     // currently we don't use any smooth animation effects.
     var animate = function () {
         requestAnimationFrame(animate)
         self.redraw()
     }
-    requestAnimationFrame(animate)
     // Handle window resizing.
     $(window).resize(function () {
         self.updateCanvasSize();
@@ -204,4 +206,5 @@ Game.prototype.init = function () {
     })
     // Tell the server we're ready to join.
     this.socket.emit("join")
+    requestAnimationFrame(animate)
 }
