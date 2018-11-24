@@ -24,17 +24,29 @@ var GameDom = {
         }
     },
     /**
-     * Display the winner.
+     * Display the winner. (flash)
      * @param {string} team.color
      * @param {string} team.name
      */
     updateWinner: function (team) {
+        var topBarElement = document.getElementById("top-bar-message")
         var element = document.getElementById("winner")
         if (element) {
             if (team) {
+
+                // show the winner element, hide the topBarElement
+                topBarElement.style.display = "none"
+                element.style.display = "block"
+
                 element.textContent = team.name.toUpperCase() + " WINS!"
                 // element.style.color = team.color
                 element.style.color = "black"
+
+                setTimeout(function () {
+                    // show the topBarElement, hide the winner element
+                    topBarElement.style.display = "block"
+                    element.style.display = "none"
+                }, 1000)
             } else {
                 element.textContent = ""
             }

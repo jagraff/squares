@@ -67,7 +67,7 @@
 /* placeholder text is needed in the empty row to maintain alignment.
  * but there's no reason for it to be visibile. 
  */
-.menu .create-header :nth-child(n+2) {
+.menu .create-header :nth-child(n+1) {
     color: white;
 }
 

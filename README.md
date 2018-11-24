@@ -15,6 +15,7 @@
     - game = tick(game, inputs)
 
 - unit tests, for the love of god
+- don't bother sending invalid moves (reduces network chatter)
 
 # add more competative elements
 - stats: high score, win/loss ratio, etc.

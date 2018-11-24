@@ -54,6 +54,9 @@ class Game {
             socket.on('click', (message) => {
                 this.handleSocketClick(socket, message)
             })
+            socket.on('surrender', () => {
+                this.handleSocketSurrender(socket)
+            })
             socket.on('disconnect', () => {
                 this.handleSocketDisconnect(socket)
             })
@@ -116,6 +119,16 @@ class Game {
         delete this.socketToPlayer[player.socket.id]
         this.players = this.players.filter((p) => p !== player)
         console.log(`[*] ${player.toString()} left the game.`)
+    }
+    // When a player surrenders, we will remove all their tiles from the board.
+    surrender(player) {
+        this
+            .world
+            .all()
+            .filter(t => t.teamId === player.teamId)
+            .forEach(t => {
+                this.updateTile(t.x, t.y, null, 1)
+            })
     }
     // How many tiles in total are still white?
     countEmptyTiles() {
@@ -250,6 +263,14 @@ class Game {
         }
         const randomSelection = Math.floor(Math.random() * availableTeamIds.length)
         return availableTeamIds[randomSelection]
+    }
+    handleSocketSurrender(socket) {
+        const player = this.socketToPlayer[socket.id]
+        if (player) {
+            this.surrender(player)
+        } else {
+            console.log(`[*] socket(${socket.id}) unknown player surrender`)
+        }
     }
     handleSocketConnect(socket) {
         const teamId = this.findTeamId()

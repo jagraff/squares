@@ -122,6 +122,13 @@ Game.prototype.init = function () {
             y: cy
         }
     }
+    // Handle surrender
+    var handleSurrender = function(event) {
+        self.socket.emit("surrender")
+    }
+    var surrenderButton = document.getElementById("surrender-button")
+    surrenderButton.addEventListener("click", handleSurrender)
+
     var handleMouseEvent = function (event) {
         g_mouseLocation = calculateLocationFromEvent(event)
         // tell the server the current mouse position if the user clicks
