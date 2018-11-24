@@ -4,6 +4,11 @@
   box-sizing: border-box;
 }
 
+html, body, div, canvas {
+    /* disable iOS weird select flicker */
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
 html, input, body {
   font-family:
   "HelveticaNeue-Light",
@@ -21,7 +26,7 @@ html, body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background: gray;
+  background: white;
 }
 
 .container {
@@ -56,10 +61,8 @@ html, body {
 }
 
 .top-bar-text {
-  /* color: white; */
   color: black;
   font-size: 14px;
-  font-weight: 100;
   letter-spacing: 3px;
   text-transform: uppercase;
   text-align: center;

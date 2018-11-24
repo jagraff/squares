@@ -26,7 +26,7 @@ class Game {
         this.world = new Matrix(size, (x, y) => new Tile(null, 1))
         this.teams = [
             new Team(0, "red", Color.RED),
-            new Team(1, "green", Color.GREEN),
+            new Team(1, "yellow", Color.YELLOW),
             new Team(2, "blue", Color.BLUE),
             new Team(3, "purple", Color.PURPLE)
         ]
@@ -75,6 +75,7 @@ class Game {
         // send game configuration to player
         player.socket.emit("config", {
             size: this.size,
+            updateInterval: Config.UPDATE_INTERVAL,
             teamId: player.teamId,
             teams: this.teams.map(team => team.toJson()),
             tiles: this.tilesJson()
@@ -173,6 +174,8 @@ class Game {
         })
         // Keep track of how many updates we've processed.
         this.updateCounter += 1
+
+        this.io.emit('turnEnd')
         // Check if someone has won the game.
         this.checkForWinner()
     }
@@ -201,20 +204,20 @@ class Game {
             setTimeout(() => this.reset(), Config.RESET_INTERVAL)
         }
     }
-    findTeam() {
-        const unavailableTeams = this.players.map(p => p.teamId)
-        const availableTeams = this.teams.filter(teamId => unavailableTeams.indexOf(teamId) === -1)
-        if (availableTeams.length == 0) {
+    findTeamId() {
+        const unavailableTeamIds = this.players.map(p => p.teamId)
+        const availableTeamIds = this.teams.map(t => t.id).filter(tid => unavailableTeamIds.indexOf(tid) === -1)
+        if (availableTeamIds.length == 0) {
             // there is no empty team
             return null
         }
-        const randomSelection = Math.floor(Math.random() * availableTeams.length)
-        return availableTeams[randomSelection]
+        const randomSelection = Math.floor(Math.random() * availableTeamIds.length)
+        return availableTeamIds[randomSelection]
     }
     handleSocketConnect(socket) {
-        const team = this.findTeam()
-        if (team) {
-            const player = new Player(socket, team.id)
+        const teamId = this.findTeamId()
+        if (teamId !== null) {
+            const player = new Player(socket, teamId)
             this.addPlayer(player)
         } else {
             console.log(`[!] socket(${socket.id}) attempted to join full game`)

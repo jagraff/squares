@@ -19,20 +19,20 @@ Renderer.prototype.strokeRect = function (x, y, width, height, color, lineWidth)
 }
 // draw the borders for the entire matrix
 Renderer.prototype.drawBorders = function (game) {
-    var matrix = game.matrix
-    var squareSize = game.calculateSquareSize()
-    for (var x = 0; x < matrix.size; x++) {
-        for (var y = 0; y < matrix.size; y++) {
-            this.strokeRect(
-                (x * squareSize),
-                (y * squareSize),
-                squareSize,
-                squareSize,
-                "rgba(0,0,0,0.4)",
-                "2"
-            )
-        }
-    }
+    // var matrix = game.matrix
+    // var squareSize = game.calculateSquareSize()
+    // for (var x = 0; x < matrix.size; x++) {
+    //     for (var y = 0; y < matrix.size; y++) {
+    //         this.strokeRect(
+    //             (x * squareSize),
+    //             (y * squareSize),
+    //             squareSize,
+    //             squareSize,
+    //             "rgba(255,255,255,1.0)",
+    //             "1"
+    //         )
+    //     }
+    // }
 }
 Renderer.prototype.circle = function (x, y, radius, color) {
     this.ctx.beginPath()
@@ -93,23 +93,13 @@ Renderer.prototype.drawTiles = function (game) {
 Renderer.prototype.drawSelectSquare = function (game) {
     var x = game.select.x
     var y = game.select.y
-    var matrix = game.matrix
     var squareSize = game.calculateSquareSize()
-    var offset = squareSize / 3
-    // this.fillRect(
-    //     (x * squareSize) + offset,
-    //     (y * squareSize) + offset,
-    //     squareSize - (offset * 2),
-    //     squareSize - (offset * 2),
-    //     // game.color
-    //     "white"
-    // )
     this.fillRect(
-        (x * squareSize) + offset,
-        (y * squareSize) + offset,
-        squareSize - (offset * 2),
-        squareSize - (offset * 2),
-        "rgba(0,0,0,0.2)"
+        (x * squareSize),
+        (y * squareSize),
+        squareSize,
+        squareSize,
+        Color.black.withA(0.1)
     )
 }
 // fill the canvas with white

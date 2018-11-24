@@ -8,6 +8,8 @@ function Game(canvas, socket, borderSize) {
     this.canvasSize = this.calculateCanvasSize()
     // obtained from server
     this.teams = []
+    this.updateInterval = 1000
+    this.turnStartTime = 0
     this.teamToRGB = {}
     this.select = null
     this.size = null
@@ -16,6 +18,8 @@ function Game(canvas, socket, borderSize) {
 Game.prototype.updateCanvasSize = function () {
     this.canvasSize = this.calculateCanvasSize()
     GameDom.updateCanvasSize(this.canvasSize)
+    // GameDom.updateTimeBarSize(this.canvasSize * 2, 20)
+    // GameDom.updateTimeBar(0.5)
 }
 Game.prototype.calculateSquareSize = function () {
     return this.canvasSize / this.size
@@ -32,6 +36,9 @@ Game.prototype.calculateCanvasSize = function () {
         (this.borderSize) // also subtract for the top-bar
     )
     var size = Math.min(maxWidth, maxHeight)
+    // XXX hack to avoid weird lines when rendering squares on the canvas
+    // make sure the canvas size is divisible by the game size (number of tiles)
+    size -= size % this.size
     return size
 }
 Game.prototype.redraw = function () {
@@ -71,7 +78,7 @@ Game.prototype.adjacentTilesForTeamId = function (x, y, teamId) {
 }
 Game.prototype.updateConfig = function (config) {
     this.size = config.size
-
+    this.updateInterval = config.updateInterval
     this.matrix = new Matrix(this.size, function (x, y) {
         return new Tile(x, y, null, 1);
     })
@@ -128,34 +135,59 @@ Game.prototype.init = function () {
     setInterval(function () {
         // only send the new mouse location IF the mouse has moved.
         if (!pointEquals(g_mouseLocation, g_lastSendMouseLocation)) {
-            self.socket.emit('click', g_mouseLocation)
+            // self.socket.emit('click', g_mouseLocation)
         }
         g_lastSendMouseLocation = g_mouseLocation
     }, 250)
+
+    // Set an interval to redraw the time bar
+    setInterval(function () {
+        var elapsedTime = Date.now() - self.turnStartTime
+        // clamp
+        elapsedTime = Math.max(0, Math.min(elapsedTime, self.updateInterval))
+        self.elapsedTime = elapsedTime
+        // var normal = elapsedTime / 1000.0
+        // GameDom.updateTimeBar(normal)
+        // self.redraw()
+    }, 10)
+    // TODO: is it better to keep an animation loop - or to redraw only when neccesary?
+    // currently we don't use any smooth animation effects.
+    var animate = function () {
+        requestAnimationFrame(animate)
+        self.redraw()
+    }
+    requestAnimationFrame(animate)
     // Handle window resizing.
     $(window).resize(function () {
         self.updateCanvasSize();
-        self.redraw();
+        // self.redraw();
     });
     // Handle socket events.
+    this.socket.on("turnEnd", function() {
+        // HACK
+        //
+        // After every new turn, clear out the last mouse location
+        // (forcing us to send a new mouse update).
+        //
+        // This way, if the player moves their mouse to a tile before the
+        // next turn starts, we'll send an update.
+        //
+        // (otherwise you will sometimes move your mouse on to a tile without
+        // it being selected, which is annoying)
+        //
+        g_lastSendMouseLocation = {}
+        // Record a timestamp of when the turn started
+        self.turnStartTime = Date.now()
+    })
     this.socket.on("tiles", function (tiles) {
         console.debug("update.tiles", tiles)
         self.updateTiles(tiles)
-
-        // HACK
-        // After every new turn, clear out the last mouse location.
-        // This way, if the player moves their mouse to a tile before the
-        // next turn starts, we'll send an update.
-        // (otherwise you will sometimes move your mouse on to a tile without
-        // it being selected, which is annoying)
-        g_lastSendMouseLocation = {}
-
-        self.redraw();
+        // self.redraw();
     })
     this.socket.on("config", function (config) {
         console.debug("update.config", config)
         self.updateConfig(config)
-        self.redraw();
+        // self.redraw();
     })
     this.socket.on("assign", function (teamId) {
         console.debug("update.assign", teamId)
@@ -168,7 +200,7 @@ Game.prototype.init = function () {
     this.socket.on("pending", function (select) {
         console.debug("update.pending", select)
         self.updateSelect(select)
-        self.redraw();
+        // self.redraw();
     })
     // Tell the server we're ready to join.
     this.socket.emit("join")

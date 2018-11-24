@@ -10,8 +10,8 @@ var port = process.env.PORT || 3000
 
 const Game = require('./server/game.js')
 const Config = require('./server/config.js')
-var size = 6
-var game = new Game(io, size)
+
+var game = new Game(io, Config.SIZE)
 
 server.listen(port, () => {
   console.log('Server listening at port %d', port)
