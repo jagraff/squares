@@ -18,7 +18,7 @@ var GameDom = {
      */
     updateTeam: function (team) {
         if (team) {
-            this.updateTopBarMessage("Team: " + team.name, team.color)
+            this.updateTopBarMessage("You Are: " + team.name, team.color)
         } else {
             this.updateTopBarMessage("Waiting...", "black")
         }

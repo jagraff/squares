@@ -230,9 +230,20 @@ class Game {
             setTimeout(() => this.reset(), Config.RESET_INTERVAL)
         }
     }
-    findTeamId() {
+    availableTeamIds() {
         const unavailableTeamIds = this.players.map(p => p.teamId)
-        const availableTeamIds = this.teams.map(t => t.id).filter(tid => unavailableTeamIds.indexOf(tid) === -1)
+        const teamsRemaining = new Set(this.world.all().map((tile) => tile.teamId))
+        const availableTeamIds = (
+            this
+                .teams
+                .map(t => t.id)
+                .filter(tid => unavailableTeamIds.indexOf(tid) === -1) // only teams that are not taken
+                .filter(tid => teamsRemaining.has(tid)) // only teams that are still on the board
+        )
+        return availableTeamIds
+    }
+    findTeamId() {
+        const availableTeamIds = this.availableTeamIds()
         if (availableTeamIds.length == 0) {
             // there is no empty team
             return null

@@ -39,7 +39,7 @@ class GameList {
         const players = (
             g.players.length
             + " / " 
-            + g.teams.length
+            + g.availableTeamIds().length
         )
         const size = (
             g.size
