@@ -1,6 +1,7 @@
 .menu {
     min-width: 400px;
-    width: 80%;
+    max-width: 800px;
+    /* width: 80%; */
     height: 200px;
     margin: auto;
     border-collapse: collapse;

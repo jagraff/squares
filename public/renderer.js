@@ -37,7 +37,7 @@ Renderer.prototype.drawBorders = function (game) {
 Renderer.prototype.circle = function (x, y, radius, color) {
     this.ctx.beginPath()
     this.ctx.fillStyle = color
-    this.ctx.arc(x, y, radius, 0, 2*Math.PI)
+    this.ctx.arc(x, y, radius, 0, 2 * Math.PI)
     this.ctx.fill()
 }
 // draw each individual tile color
@@ -51,9 +51,9 @@ Renderer.prototype.drawTiles = function (game) {
             // teamId null maps to tileId white
             // kinda hacky, would be nice to clean this up
             var tileColor = (
-                tile.teamId !== null
-                ? game.teams[tile.teamId].color
-                : Color.white
+                tile.teamId !== null ?
+                game.teams[tile.teamId].color :
+                Color.white
             )
             if (tile.teamId !== null) {
                 var offset = 0
@@ -76,7 +76,10 @@ Renderer.prototype.drawTiles = function (game) {
             } else {
                 // highlight tiles which you can capture
                 var power = game.adjacentTilesForTeamId(x, y, game.teamId).length
-                var highlightColor = teamColor.withA(0.1)
+
+                // var alpha = (((x * Math.PI) + (Date.now() / 1000)) % 1.0)
+                var highlightColor = teamColor.withA(0.2)
+
                 if (power > 0 && tile.teamId === null) {
                     this.fillRect(
                         (x * squareSize) + offset,
@@ -86,6 +89,17 @@ Renderer.prototype.drawTiles = function (game) {
                         highlightColor
                     )
                 }
+            }
+
+            if (game.lastMouseLocation.x === x &&
+                game.lastMouseLocation.y === y) {
+                this.fillRect(
+                    (x * squareSize),
+                    (y * squareSize),
+                    squareSize,
+                    squareSize,
+                    "rgba(255,255,255,0.1)"
+                )
             }
         }
     }

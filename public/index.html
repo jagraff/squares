@@ -14,55 +14,47 @@
 <body>
 
   <div class="top-bar top-bar-text">
-
     <a href="/" class="back-button">
-      HOME
+      home
     </a>
-
     <span id="surrender-button" class="give-up-button">
-      SURRENDER
+      surrender
     </span>
-
     <span style="font-family: Arial, Helvetica, sans-serif">
       conflict
     </span>
   </div>
-
   <div class="top-space">
     <span id="top-bar-message"></span>
     <span id="winner"></span>
   </div>
-
   <canvas id="canvas" style="display: none">
   </canvas>
-
   <table id="menu" class="menu" style="width: 80%;">
     <tbody id="menu-table">
       <tr>
         <td>server name</td>
         <td>players</td>
-        <td>world size</td>
+        <td>size</td>
         <td>action</td>
       </tr>
-
-      <tr class="create-header">
-        <td>new game</td>
-        <td>max players</td>
-        <td>world size</td>
+      <!-- <tr class="create-header">
+        <td></td>
+        <td>players</td>
+        <td>size</td>
         <td>status</td>
-      </tr>
-
+      </tr> -->
       <tr class="create">
         <td>
-          <!-- <input id="create-name" min="1" max="10" placeholder="name" value="">
-          </input> -->
-        </td>
-        <td>
-          <input id="create-players" type="number" min="1" max="10" placeholder="max players" value="">
+          <input id="create-name" min="1" max="10" placeholder="name" value="">
           </input>
         </td>
         <td>
-          <input id="create-size" type="number" min="1" max="10" placeholder="world size" value="">
+          <input id="create-players" type="number" min="1" max="10" placeholder="players" value="">
+          </input>
+        </td>
+        <td>
+          <input id="create-size" type="number" min="1" max="10" placeholder="size" value="">
           </input>
         </td>
         <td>
@@ -71,7 +63,21 @@
           </button>
         </td>
       </tr>
-
+      <!-- <tr class="create-header">
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+      </tr> -->
+      <tr class="create">
+        <td>
+          <input id="create-name" min="1" max="4" placeholder="username" value="">
+          </input>
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
     </tbody>
   </table>
 

@@ -6,6 +6,7 @@ function Game(canvas, socket) {
     this.socket = socket
     // updated at run-time as neccesary
     this.canvasSize = this.calculateCanvasSize()
+    this.lastMouseLocation = {x: 0, y: 0}
     // obtained from server
     this.teams = []
     this.updateInterval = 1000
@@ -131,15 +132,30 @@ Game.prototype.init = function () {
 
     var handleMouseEvent = function (event) {
         g_mouseLocation = calculateLocationFromEvent(event)
+        self.lastMouseLocation = g_mouseLocation
         // tell the server the current mouse position if the user clicks
         self.socket.emit('click', g_mouseLocation)
     }
     // Keep track of where the mouse is, but don't neccesary send every update to the server
     this.canvas.addEventListener('mousemove', function () {
         g_mouseLocation = calculateLocationFromEvent(event)
+        self.lastMouseLocation = g_mouseLocation
+    });
+    // Click and drag functionality on mobile.
+    this.canvas.addEventListener('touchmove', function (event) {
+        event.clientX = event.touches[0].pageX;
+        event.clientY = event.touches[0].pageY;
+        var currentLocation = calculateLocationFromEvent(event)
+        if (!pointEquals(currentLocation, g_mouseLocation)) {
+            g_mouseLocation = currentLocation
+            self.lastMouseLocation = g_mouseLocation
+            handleMouseEvent(event)
+        }
     });
     // Tell the server if the canvas is clicked.
-    this.canvas.addEventListener('click', handleMouseEvent)
+    this.canvas.addEventListener('click', function (event) {
+        handleMouseEvent(event)
+    })
     // Tell the server the current mouse position - every 10th of a second
     setInterval(function () {
         // only send the new mouse location IF the mouse has moved.
