@@ -1,30 +1,71 @@
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <title>conflict</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="menu.css">
   <meta charset='utf-8'>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
 </head>
-
 <body>
   <div class="top-bar top-bar-text">
-    Team: <span id="color">Red</span>
+    <a href="/" class="back-button">
+      home
+    </a>
+    <span id="surrender-button" class="give-up-button">
+      surrender
+    </span>
+    <span style="font-family: Arial, Helvetica, sans-serif">
+      conflict
+    </span>
   </div>
   <div class="top-space">
+    <span id="top-bar-message"></span>
+    <span id="winner"></span>
   </div>
-  <div style="-moz-user-select: none; -webkit-user-select: none; -ms-user-select:none; user-select:none;-o-user-select:none;"
-    unselectable="on" onselectstart="return false;" onmousedown="return false;" class="container">
-    <div id="inner-container">
-      <canvas id="canvas"></canvas>
-      <p id="winner"></p>
-    </div>
-  </div>
-  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <canvas id="canvas" style="display: none">
+  </canvas>
+  <table id="menu" class="menu" style="width: 80%;">
+    <tbody id="menu-table">
+      <tr>
+        <td>server name</td>
+        <td>players</td>
+        <td>size</td>
+        <td>action</td>
+      </tr>
+      <tr class="create">
+        <td>
+          <input id="create-name" min="1" max="10" placeholder="name" value="">
+          </input>
+        </td>
+        <td>
+          <input id="create-players" type="number" min="1" max="10" placeholder="players" value="">
+          </input>
+        </td>
+        <td>
+          <input id="create-size" type="number" min="1" max="10" placeholder="size" value="">
+          </input>
+        </td>
+        <td>
+          <button id="create-button">
+            create
+          </button>
+        </td>
+      </tr>
+      <tr class="create">
+        <td>
+          <input id="create-name" min="1" max="4" placeholder="username" value="">
+          </input>
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/main.js"></script>
+  </script>
 </body>
-
 </html>

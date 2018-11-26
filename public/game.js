@@ -49,7 +49,7 @@ Game.prototype.redraw = function () {
 }
 Game.prototype.updateTeams = function (teams) {
     for (var i = 0; i < teams.length; i++) {
-        const t = teams[i]
+        var t = teams[i]
         this.teams[t.id] = Team.fromJson(t)
     }
 }

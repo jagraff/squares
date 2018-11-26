@@ -110,7 +110,7 @@ class Game {
             teams: this.teams.map(team => team.toJson()),
             tiles: this.tilesJson()
         })
-        console.log(`[*] ${player.toString()} joined the game.`)
+        console.debug(`[*] ${player.toString()} joined the game.`)
     }
     addSpectator(socket) {
 
@@ -118,7 +118,7 @@ class Game {
     removePlayer(player) {
         delete this.socketToPlayer[player.socket.id]
         this.players = this.players.filter((p) => p !== player)
-        console.log(`[*] ${player.toString()} left the game.`)
+        console.debug(`[*] ${player.toString()} left the game.`)
     }
     // When a player surrenders, we will remove all their tiles from the board.
     surrender(player) {
@@ -146,7 +146,7 @@ class Game {
         this.world.set(x, y, tile)
         // tell every client about the updated tile
         this.namespace.emit("tiles", [tile.toJson()])
-        console.log(`[*] set tile ${tile.toJson()}`)
+        console.debug(`[*] set tile ${tile.toJson()}`)
     }
     // Process 1 turn.
     tick() {
@@ -237,7 +237,7 @@ class Game {
             const winner = tilesByColor[0][0].teamId
             // Tell the clients who won.
             this.namespace.emit('winner', winner)
-            console.log(`[*] ${winner} won the game`)
+            console.debug(`[*] ${winner} won the game`)
             // Stop updating the game.
             this.running = false
             setTimeout(() => this.reset(), Config.RESET_INTERVAL)
@@ -269,7 +269,7 @@ class Game {
         if (player) {
             this.surrender(player)
         } else {
-            console.log(`[*] socket(${socket.id}) unknown player surrender`)
+            console.debug(`[*] socket(${socket.id}) unknown player surrender`)
         }
     }
     handleSocketConnect(socket) {
@@ -278,7 +278,7 @@ class Game {
             const player = new Player(socket, teamId)
             this.addPlayer(player)
         } else {
-            console.log(`[!] socket(${socket.id}) attempted to join full game`)
+            console.debug(`[!] socket(${socket.id}) attempted to join full game`)
         }
     }
     handleSocketDisconnect(socket) {
@@ -286,7 +286,7 @@ class Game {
         if (player) {
             this.removePlayer(player)
         } else {
-            console.log(`[*] socket(${socket.id}) unknown player disconnected`)
+            console.debug(`[*] socket(${socket.id}) unknown player disconnected`)
         }
     }
     // Handle a click event from a socket.
@@ -303,18 +303,18 @@ class Game {
                     if (canAttack || canUpgrade) {
                         player.pendingMove = point
                         player.socket.emit("pending", message)
-                        console.log(`[*] ${player.toString()} set pending move ${point.toString()}`)
+                        console.debug(`[*] ${player.toString()} set pending move ${point.toString()}`)
                     } else {
-                        console.log(`[!] ${player.toString()} clicked invalid move ${point.toString()}`)
+                        console.debug(`[!] ${player.toString()} clicked invalid move ${point.toString()}`)
                     }
                 } else {
-                    console.log(`[!] ${player.toString()} sent out-of-bounds click ${point.toString()}`)
+                    console.debug(`[!] ${player.toString()} sent out-of-bounds click ${point.toString()}`)
                 }
             } else {
-                console.log(`[!] ${player.toString()} sent invalid click ${message.toString()}`)
+                console.debug(`[!] ${player.toString()} sent invalid click ${message.toString()}`)
             }
         } else {
-            console.log(`[*] socket(${socket.id}) unknown player clicked`)
+            console.debug(`[*] socket(${socket.id}) unknown player clicked`)
         }
     }
 }

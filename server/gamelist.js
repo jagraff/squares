@@ -64,18 +64,18 @@ class GameList {
         // Ok, looks like we're good to join this game.
         // Instruct the client to join the game's namespace
         socket.emit("game.join", game.namespaceId)
-        console.log(`[*] ${socket.id} is joining ${game.toString()}`)
+        console.debug(`[*] ${socket.id} is joining ${game.toString()}`)
     }
     createGame (socket, options) {
         const gameId = this.games.length.toString()
         const namespaceId = this.gameIdToNamespaceId(gameId)
         const namespace = this.io.of(namespaceId)
-        // console.log(this.games.length)
+        // console.debug(this.games.length)
         const game = new Game(gameId, namespace, namespaceId, options.size)
         const message = this.gameToJson(game)
         // add this game to the list of all games
         this.games[game.id] = game
-        console.log(`[*] new game ${game.toString()}`)
+        console.debug(`[*] new game ${game.toString()}`)
         // inform everyone in the menu of this new game
         this.namespace.emit("game.add", message)
     }

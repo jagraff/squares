@@ -1,4 +1,5 @@
-var game
-$(function () {
-  initMenu(io)
+window.addEventListener("load", function() {
+  $(function () {
+    initMenu(io)
+  })
 })

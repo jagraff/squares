@@ -23,7 +23,7 @@
 }
 
 .menu tr:first-child {
-    background: white;
+    background: inherit;
 }
 
 .menu td {

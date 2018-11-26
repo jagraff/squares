@@ -8,7 +8,7 @@ var initMenu = function (io) {
         // button-game-GAMEID
         var gameId = event.target.id.split("-")[2]
         socket.emit("menu.join", gameId)
-        console.log("[sent] menu.join", gameId)
+        console.debug("[sent] menu.join", gameId)
     }
     var handleGameNamespaceId = function (namespaceId) {
         var namespace = io(namespaceId)
@@ -59,7 +59,7 @@ var initMenu = function (io) {
         maxPlayers: maxPlayers
       }
       socket.emit("menu.add", game)
-      console.log("[sent] menu.add", game)
+      console.debug("[sent] menu.add", game)
     }
     createButton.addEventListener("click", handleCreateButtonClick)
     socket.emit("menu.ready")

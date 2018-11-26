@@ -10,10 +10,17 @@ var io = require('socket.io')(server)
 var port = process.env.PORT || 3000
 
 // serve static assets, probably move this to CDN at some point
-app.use(express.static(path.join(__dirname, 'public')))
-app.use(express.static(path.join(__dirname, 'static')))
+if (process.env.DEBUG === "true") {
+  app.use(express.static(path.join(__dirname, 'assets')))
+  app.use(express.static(path.join(__dirname, 'public')))
+  app.use(express.static(path.join(__dirname, 'static')))
+} else {
+  app.use(express.static(path.join(__dirname, 'assets')))
+  app.use(express.static(path.join(__dirname, 'dist')))
+}
+
 server.listen(port, () => {
-  console.log('Server listening at port %d', port)
+  console.debug('Server listening at port %d', port)
 })
 
 const GameList = require('./server/gamelist.js')

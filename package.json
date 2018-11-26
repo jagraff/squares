@@ -19,6 +19,6 @@
   },
   "scripts": {
     "start": "node index.js",
-    "build": "uglifyjs --toplevel --mangle --compress -- public/*.js > dist/main.js"
+    "build": "uglifyjs --toplevel --mangle --compress -- public/*.js static/jquery.min.js > dist/main.js"
   }
 }
